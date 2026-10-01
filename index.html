@@ -1,0 +1,1570 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- flow-rebuild template (Growth Audit, v3: + walkthrough video, phone view/QR, localization, paywall today vs proposed). Replace every double-brace placeholder, everything between
+     the SCREENS markers, and the CONTENT json. Rules that brand-check.py enforces are marked RULE.
+     Reference builds: eddieatadapty.github.io/datacamp-flow-rebuild-v2 · bterzic123.github.io/planner5d-flow-rebuild-v2 -->
+<title>iHeart Growth Audit</title>
+<meta name="description" content="Five ideas to turn more iHeart users into subscribers, each built into a clickable version of iHeart's own onboarding. Prepared by Adapty.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the APP's font (brand.json fonts, or the closest Google family) + a mono if the app shows code -->
+<style>
+/* BRAND:START — the only place the APP's colours are written as literals. RULE: every value here is
+   copied from brand.json / a sampled pixel of the app's own screens; never "improved". Used only inside the phone. */
+:root{
+  --b-primary:#C6002B;      /* iHeart red: news.iheart.com CSS, in-app #c5002a */
+  --b-primary-ink:#ffffff;
+  --b-bg:#F6F8F9;           /* in-app background (sampled #f5f8f9) */
+  --b-surface:#ffffff;      /* cards, tab bar */
+  --b-ink:#181818;          /* primary text, stop button */
+  --b-ink2:#717277;         /* secondary text */
+  --b-ink3:#3F4447;         /* inactive tabs, icons */
+  --b-line:#E6EAED;         /* borders, add-preset tiles */
+  --b-line2:#C5CDD2;        /* outlined controls */
+  --b-accent2:#E12C39;      /* marketing red, App Store art (sampled) */
+  --b-blue:#0254B3;         /* location pill on Live Radio Dial (sampled) */
+  --b-star:#C6002B;
+  --b-grad:linear-gradient(180deg,#E12C39,#C6002B);
+  --b-radius:12px;          /* station tiles, measured off screenshot 4 */
+  --b-pill:999px;
+  --b-font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --b-mono:ui-monospace,monospace;
+}
+/* BRAND:END */
+/* A second app family (e.g. a mono for code) is applied HERE, never in SCREENS css (brand-check allows only
+   var(--b-font) there). Prefix with .scr so it beats the screens' font shorthands, e.g.:
+   .scr .code,.scr .instr code{font-family:var(--b-mono)} */
+
+/* ================= the audit page — Adapty's, not the app's. Light, Apple-style. ================= */
+:root{
+  color-scheme:light;
+  --st-ground:#f5f5f7; --st-card:#ffffff; --st-ink:#1d1d1f; --st-ink2:#6e6e73; --st-ink3:#86868b;
+  --st-hair:rgba(0,0,0,.09); --st-link:#0066cc;
+  --st-accent:#181818;      /* dark brand colour of the APP: buttons, the outcome band */
+  --st-hi:#E12C39;          /* bright brand colour of the APP: outcome numbers on the band, idea dots */
+  --st-mark:rgba(225,44,57,.3); /* --st-hi at ~.5 alpha: the highlighter under impact numbers */
+  --st-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+html,body{margin:0}
+body{background:var(--st-ground);color:var(--st-ink);font-family:var(--st-font);-webkit-font-smoothing:antialiased;font-size:17px;line-height:1.47}
+.au-wrap{max-width:1080px;margin:0 auto;padding-inline:22px}
+a{color:var(--st-link)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--st-link);outline-offset:3px;border-radius:6px}
+mark{background:linear-gradient(transparent 62%,var(--st-mark) 62%,var(--st-mark) 92%,transparent 92%);color:inherit;padding:0 .04em}
+
+/* nav */
+.au-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(245,245,247,.8);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--st-hair)}
+.au-nav-in{max-width:1080px;margin:0 auto;padding-inline:22px;height:52px;display:flex;align-items:center;gap:26px}
+.au-brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.au-brand img{width:26px;height:26px;border-radius:7px;flex:none}
+.au-brand span{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.au-brand small{font-size:15px;font-weight:400;color:var(--st-ink2)}
+.au-nav a{font-size:13px;color:var(--st-ink);text-decoration:none;opacity:.82}
+.au-nav a:hover{opacity:1}
+@media (max-width:560px){.au-nav a.au-opt{display:none}.au-brand small{display:none}}
+
+/* hero */
+.au-top-hero{text-align:center;padding-top:clamp(56px,9vw,96px);overflow:hidden;position:relative}
+.au-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--st-ink);margin:0 0 14px}
+.au-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-display{font-size:clamp(60px,12vw,120px);line-height:.98;font-weight:700;letter-spacing:-.05em;margin:0}
+.au-lede{font-size:clamp(23px,3.4vw,34px);line-height:1.16;font-weight:600;letter-spacing:-.022em;max-width:760px;margin:22px auto 0;text-wrap:balance}
+.au-lede span{color:var(--st-ink2)}
+.au-byline{font-size:14px;color:var(--st-ink3);margin:18px 0 0}
+.au-ctas{display:flex;gap:26px;justify-content:center;align-items:center;margin-top:30px;flex-wrap:wrap}
+.au-btn{display:inline-block;background:var(--st-accent);color:#fff;border-radius:980px;padding:12px 23px;font-size:17px;font-weight:500;text-decoration:none;border:0;cursor:pointer}
+.au-btn:hover{filter:brightness(1.25)}
+.au-lnk{background:none;border:0;padding:0;color:var(--st-link);font-size:17px;text-decoration:none;cursor:pointer}
+.au-lnk::after{content:"\00a0›"}
+.au-lnk:hover{text-decoration:underline}
+.au-phones{display:flex;justify-content:center;align-items:flex-start;margin-top:clamp(40px,6vw,64px);height:clamp(300px,52vw,560px)}
+.au-hp{flex:none;border:0;padding:0;background:none;cursor:pointer;width:27%;max-width:290px;margin:0 -2.5%;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.au-hp img{display:block;width:100%;height:auto;filter:drop-shadow(0 28px 50px rgba(0,0,0,.2))}
+.au-hp.au-c{width:31%;max-width:330px;z-index:2}
+.au-hp.au-l{transform:translateY(12%) rotate(-5deg)}
+.au-hp.au-r{transform:translateY(12%) rotate(5deg)}
+.au-hp.au-l:hover{transform:translateY(9%) rotate(-5deg)}.au-hp.au-r:hover{transform:translateY(9%) rotate(5deg)}.au-hp.au-c:hover{transform:translateY(-3%)}
+
+/* sections */
+.au-sec{padding-block:clamp(72px,10vw,120px)}
+.au-sec.au-white{background:var(--st-card)}
+.au-kicker{font-size:15px;font-weight:600;color:var(--st-ink2);margin:0 0 12px}
+.au-h2{font-size:clamp(34px,5.2vw,56px);line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.au-h2 span{color:var(--st-ink3)}
+.au-split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,80px);align-items:end}
+.au-split p{margin:0;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--st-ink2);letter-spacing:-.01em}
+.au-split p b{color:var(--st-ink);font-weight:600}
+.au-split p + p{margin-top:16px}
+.au-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(48px,7vw,80px);border-top:1px solid var(--st-hair)}
+.au-stat{padding:28px 20px 0 0}
+.au-stat b{display:block;font-size:clamp(40px,5.5vw,64px);font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.au-stat span{display:block;font-size:15px;color:var(--st-ink2);margin-top:10px;max-width:22ch}
+.au-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px);margin-top:clamp(48px,7vw,72px)}
+.au-note h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 8px}
+.au-note p{margin:0;font-size:15.5px;line-height:1.5;color:var(--st-ink2)}
+.au-note .au-ic{width:36px;height:36px;border-radius:10px;background:var(--st-ground);display:grid;place-items:center;margin-bottom:16px}
+.au-note .au-ic svg{width:19px;height:19px;stroke:var(--st-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ideas */
+.au-ideas-h{margin-bottom:clamp(32px,5vw,48px)}
+.au-list{background:var(--st-card);border-radius:28px;padding-inline:clamp(20px,4vw,44px)}
+.au-idea{display:grid;grid-template-columns:56px 1fr 220px;gap:20px;align-items:start;padding-block:clamp(26px,3.5vw,36px);border-top:1px solid var(--st-hair)}
+.au-idea:first-child{border-top:0}
+.au-idea .au-num{font-size:15px;font-weight:600;color:var(--st-ink3);font-variant-numeric:tabular-nums;padding-top:6px}
+.au-idea h3{font-size:clamp(21px,2.4vw,26px);line-height:1.2;font-weight:600;letter-spacing:-.022em;margin:0 0 8px}
+.au-idea p{margin:0 0 12px;font-size:17px;line-height:1.5;color:var(--st-ink2);max-width:58ch}
+.au-idea p code{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--st-ink);background:var(--st-ground);padding:2px 7px;border-radius:6px}
+.au-idea .au-lnk{font-size:15px}
+.au-imp{text-align:right}
+.au-imp .au-v{font-size:clamp(30px,3.6vw,40px);font-weight:700;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--st-accent)}
+.au-imp .au-l{font-size:13.5px;color:var(--st-ink2);margin-top:8px}
+.au-band{margin-top:20px;background:var(--st-accent);color:#fff;border-radius:28px;padding:clamp(32px,5vw,56px);display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,64px);align-items:center}
+.au-band .au-k{font-size:15px;font-weight:600;color:rgba(255,255,255,.62);margin:0 0 10px}
+.au-band h3{font-size:clamp(24px,3vw,32px);line-height:1.18;font-weight:600;letter-spacing:-.022em;margin:0;text-wrap:balance}
+.au-band .au-fn{font-size:13px;line-height:1.5;color:rgba(255,255,255,.55);margin:16px 0 0;max-width:52ch}
+.au-nums{display:flex;gap:clamp(28px,4vw,48px)}
+.au-nums small{display:block;font-size:13px;color:rgba(255,255,255,.62)}
+.au-nums b{display:block;font-size:clamp(48px,6.5vw,76px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-hi);font-variant-numeric:tabular-nums;margin:4px 0 8px}
+.au-nums span{font-size:14px;color:rgba(255,255,255,.8)}
+.au-band .au-btn{background:var(--st-hi);color:var(--st-accent);font-weight:600;margin-top:26px}
+
+/* prototype */
+.au-proto-h{text-align:center;max-width:720px;margin:0 auto}
+.au-proto-h p{font-size:clamp(17px,1.7vw,21px);color:var(--st-ink2);margin:14px 0 0}
+.au-seg{display:flex;gap:4px;justify-content:center;margin:clamp(28px,4vw,40px) auto 0;padding:4px;background:var(--st-ground);border-radius:980px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.au-seg::-webkit-scrollbar{display:none}
+.au-chip{flex:none;display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--st-ink2);font-size:13.5px;font-weight:500;padding:8px 14px;border-radius:980px;cursor:pointer;white-space:nowrap}
+.au-chip:hover{color:var(--st-ink)}
+.au-chip.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.au-chip i{font-style:normal;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--st-hi);color:var(--st-accent)}
+.au-stage{display:grid;grid-template-columns:auto minmax(0,420px);gap:clamp(32px,6vw,72px);justify-content:center;align-items:center;margin-top:clamp(28px,4vw,44px)}
+.phone{width:390px;height:844px;border-radius:56px;padding:10px;background:#0b0d10;box-shadow:0 0 0 1.5px #3a3d42,0 40px 90px rgba(0,0,0,.25);max-width:calc(100vw - 44px)}
+.phone-in{position:relative;width:100%;height:100%;border-radius:46px;overflow:hidden;background:var(--b-bg)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#000;z-index:9}
+.sbar{position:absolute;top:0;left:0;right:0;height:52px;display:flex;justify-content:space-between;align-items:center;padding:4px 32px 0;font:600 15px -apple-system,system-ui,sans-serif;color:var(--b-ink);z-index:8;pointer-events:none}
+.au-pn{background:var(--st-ground);border-radius:28px;padding:clamp(26px,3.5vw,38px)}
+.au-pn-k{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--st-ink)}
+.au-pn-k i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-pn-k.au-ctx{color:var(--st-ink2)}.au-pn-k.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-pn-t{font-size:clamp(24px,2.6vw,30px);line-height:1.12;font-weight:700;letter-spacing:-.028em;margin:10px 0 14px;text-wrap:balance}
+.au-pn-h{margin:0;font-size:17px;line-height:1.55;color:var(--st-ink2)}
+.au-pn-h b{color:var(--st-ink);font-weight:600}
+.au-pn-o{margin-top:24px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-pn-o .au-lab{font-size:13px;font-weight:600;color:var(--st-ink3)}
+.au-pn-o .au-val{font-size:clamp(38px,4.4vw,50px);font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--st-accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.au-pn-o .au-sub{font-size:14px;color:var(--st-ink2);margin-top:4px}
+.au-pn-a{margin:18px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-pn-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--st-hair);font-size:13px;color:var(--st-ink3)}
+.au-pn-nav button{background:var(--st-card);border:0;border-radius:980px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--st-ink);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.au-pn-nav button:disabled{opacity:.35;cursor:default}
+.au-hint{text-align:center;font-size:14px;color:var(--st-ink3);margin:22px 0 0}
+
+/* footer */
+.au-foot{padding-block:56px 72px;border-top:1px solid var(--st-hair)}
+.au-foot details{border-bottom:1px solid var(--st-hair);padding-bottom:18px}
+.au-foot summary{cursor:pointer;font-size:17px;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.au-foot summary::-webkit-details-marker{display:none}
+.au-foot summary::after{content:"+";font-size:24px;font-weight:300;color:var(--st-ink2)}
+.au-foot details[open] summary::after{content:"−"}
+.au-srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 48px;margin-top:18px}
+.au-srcs h4{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink3);margin:18px 0 6px}
+.au-srcs dl{margin:0}.au-srcs dt{font-size:14.5px;font-weight:600;margin-top:10px}
+.au-srcs dd{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--st-ink2)}
+.au-fine{font-size:12.5px;line-height:1.6;color:var(--st-ink3);margin:22px 0 0;max-width:80ch}
+.au-cta-line{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:36px}
+.au-cta-line p{margin:0;font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.02em;max-width:34ch}
+
+@media (max-width:900px){
+  .au-split,.au-band{grid-template-columns:1fr}
+  .au-notes{grid-template-columns:1fr}
+  .au-idea{grid-template-columns:40px 1fr}
+  .au-imp{grid-column:2;text-align:left;display:flex;align-items:baseline;gap:10px}
+  .au-imp .au-l{margin:0}
+  .au-imp .au-v{white-space:nowrap}
+  .au-stage{grid-template-columns:1fr;justify-items:center}
+  .au-pn{width:100%;max-width:520px}
+  .au-srcs{grid-template-columns:1fr}
+}
+@media (max-width:560px){.au-stats{grid-template-columns:1fr}.au-stat{padding:22px 0 0}.au-nums{flex-direction:column;gap:18px}}
+
+/* ================= extras (audit side): video, language, phone view + QR, paywall today vs proposed, ?tour ================= */
+[hidden]{display:none!important}
+/* the device never scrolls: off-screen slides would otherwise make it scrollable by focus / scrollIntoView */
+.phone-in,.scr{overflow:clip}
+/* hero: walkthrough link */
+.au-play::before{content:"▶";font-size:.72em;margin-right:7px;position:relative;top:-1px}
+/* video dialog */
+.au-vid{border:0;padding:0;background:transparent;max-width:min(1120px,94vw);width:100%;overflow:visible}
+.au-vid::backdrop{background:rgba(0,0,0,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.au-vid-in{background:#000;border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.au-vid video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.au-vid-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 4px 0;font-size:14px}
+.au-vid-bar a{color:#fff;opacity:.85}
+.au-vid-x{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:980px;padding:8px 16px;font-size:14px;cursor:pointer}
+/* language switch */
+.au-langrow{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0 0;font-size:13.5px;color:var(--st-ink2);flex-wrap:wrap}
+.au-lsw{display:inline-flex;gap:2px;padding:3px;background:var(--st-ground);border-radius:980px}
+.au-lsw button{border:0;background:none;padding:6px 13px;border-radius:980px;font-size:13.5px;font-weight:500;color:var(--st-ink2);cursor:pointer;white-space:nowrap}
+.au-lsw button.on{background:var(--st-card);color:var(--st-ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* QR card (desktop) / full-screen button (phone) */
+.au-qr{display:flex;align-items:center;gap:18px;margin:26px auto 0;max-width:500px;background:var(--st-ground);border-radius:22px;padding:14px 22px 14px 14px}
+.au-qr img{width:112px;height:112px;border-radius:12px;image-rendering:pixelated;flex:none;background:#fff}
+.au-qr b{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.au-qr p{margin:4px 0 0;font-size:14.5px;line-height:1.45;color:var(--st-ink2)}
+.au-mobw{display:none;text-align:center;margin-top:22px}
+@media (max-width:900px){.au-qr{display:none}.au-mobw{display:block}}
+/* paywall: today vs proposed */
+.au-cmp{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr) minmax(0,290px);gap:clamp(24px,4vw,52px);align-items:center;margin-top:clamp(32px,5vw,52px)}
+.au-cmp figure{margin:0;text-align:center}
+.au-cmp figure img{display:block;width:100%;height:auto;filter:drop-shadow(0 24px 44px rgba(0,0,0,.18))}
+.au-cmp figcaption{margin-top:14px;font-size:15px;font-weight:600}
+.au-cmp figcaption span{color:var(--st-ink2);font-weight:400}
+.au-cmp-go{border:0;padding:0;background:none;cursor:pointer;display:block;width:100%;transition:transform .3s}
+.au-cmp-go:hover{transform:translateY(-4px)}
+.au-chg{list-style:none;margin:0;background:var(--st-card);border-radius:24px;padding:4px clamp(18px,2.4vw,28px)}
+.au-chg li{padding:15px 0;border-top:1px solid var(--st-hair)}
+.au-chg li:first-child{border-top:0}
+.au-chg h4{margin:0 0 7px;font-size:16px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.au-chg h4 i{font-style:normal;font-size:12px;font-weight:600;color:var(--st-accent);background:var(--st-mark);border-radius:6px;padding:2px 8px;white-space:nowrap}
+.au-was,.au-now{display:grid;grid-template-columns:78px 1fr;gap:8px;font-size:14.5px;line-height:1.42}
+.au-was{color:var(--st-ink3)}
+.au-now{color:var(--st-ink);margin-top:3px}
+.au-was em,.au-now em{font-style:normal;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.au-now em{color:var(--st-link)}
+.au-kept{margin:22px 0 0;font-size:14px;color:var(--st-ink2);text-align:center}
+@media (max-width:900px){.au-cmp{grid-template-columns:1fr 1fr;gap:18px}.au-chg{grid-column:1 / -1;order:3}.au-was,.au-now{grid-template-columns:70px 1fr}}
+
+/* ?app — the prototype full screen on a real phone, with a bar that opens the idea panel */
+html.appmode,html.appmode body{height:100%;overflow:hidden;background:#000}
+html.appmode .au-nav,html.appmode .au-top-hero,html.appmode #why,html.appmode #ideas,html.appmode #compare,html.appmode .au-foot,
+html.appmode .au-proto-h,html.appmode #prototype .au-langrow,html.appmode #chips,html.appmode .au-hint,html.appmode .au-qr,html.appmode .au-mobw{display:none!important}
+html.appmode #prototype{padding:0;background:#000}
+html.appmode #prototype .au-wrap{padding:0;max-width:none}
+html.appmode .au-stage{display:block;margin:0}
+html.appmode .phone{position:fixed;top:0;left:0;right:0;margin:0 auto;width:min(100%,480px);height:calc(100% - 56px - env(safe-area-inset-bottom,0px));max-width:none;border-radius:0;padding:0;box-shadow:none;background:#000}
+html.appmode .phone-in{border-radius:0}
+html.appmode .island,html.appmode .sbar{display:none}
+html.appmode .scr .s-pad{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 16px))}
+html.appmode .scr .s-x,html.appmode .scr .s-lang{top:max(54px,calc(env(safe-area-inset-top,0px) + 10px))}
+.au-appbar,.au-scrim{display:none}
+html.appmode .au-appbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;height:calc(56px + env(safe-area-inset-bottom,0px));padding:0 12px env(safe-area-inset-bottom,0px) 16px;align-items:center;gap:12px;background:#0b0b0c;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+.au-ab-why{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;color:#fff;font-size:14px;font-weight:500;text-align:left;cursor:pointer;padding:0}
+.au-ab-why i{width:8px;height:8px;border-radius:50%;background:var(--st-hi);flex:none}
+.au-ab-why span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.au-ab-why em{font-style:normal;color:rgba(255,255,255,.6);margin-left:auto;flex:none;font-size:13px}
+.au-appbar .au-lsw{background:rgba(255,255,255,.12)}
+.au-appbar .au-lsw button{color:rgba(255,255,255,.75);padding:5px 11px}
+.au-appbar .au-lsw button.on{background:#fff;color:#000}
+html.appmode #panel{position:fixed;left:0;right:0;bottom:0;z-index:80;max-width:none;width:auto;margin:0 auto;border-radius:24px 24px 0 0;max-height:78%;overflow:auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.3,.7,.2,1);padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+html.appmode.au-open #panel{transform:none}
+html.appmode.au-open .au-scrim{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.5)}
+
+/* ?tour — 1280×720 walkthrough frames (record-video.sh renders them into assets/walkthrough.mp4) */
+.au-tour{display:none}
+html.tourmode,html.tourmode body{overflow:hidden;background:var(--st-ground)}
+html.tourmode body *{visibility:hidden}
+html.tourmode .phone,html.tourmode .phone *,html.tourmode .au-tour,html.tourmode .au-tour *{visibility:visible}
+html.tourmode .phone{position:fixed;left:170px;top:44px;margin:0;transform:scale(.755);transform-origin:0 0;box-shadow:0 0 0 1.5px #3a3d42,0 34px 80px rgba(0,0,0,.22);z-index:5;max-width:none}
+html.tourmode .au-tour{display:block;position:fixed;inset:0;z-index:6;pointer-events:none;color:var(--st-ink)}
+.au-tb{position:absolute;left:590px;top:30px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600}
+.au-tb img{width:26px;height:26px;border-radius:7px}
+.au-tb small{font-size:16px;font-weight:400;color:var(--st-ink2)}
+.au-tby{position:absolute;right:48px;top:32px;font-size:14px;color:var(--st-ink3)}
+.au-tcap{position:absolute;left:590px;right:60px;top:50%;transform:translateY(-50%)}
+.au-tk{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:600}
+.au-tk i{width:9px;height:9px;border-radius:50%;background:var(--st-hi);box-shadow:0 0 0 3px var(--st-mark)}
+.au-tk.au-ctx{color:var(--st-ink2)}.au-tk.au-ctx i{background:var(--st-ink3);box-shadow:none}
+.au-tt{font-size:46px;line-height:1.06;font-weight:700;letter-spacing:-.035em;margin:14px 0 14px;text-wrap:balance}
+.au-tl{font-size:23px;line-height:1.36;color:var(--st-ink2);letter-spacing:-.01em;margin:0;max-width:28ch}
+.au-to{margin-top:28px;padding-top:22px;border-top:1px solid var(--st-hair)}
+.au-to small{display:block;font-size:14px;font-weight:600;color:var(--st-ink3)}
+.au-to b{display:inline-block;font-size:62px;font-weight:700;letter-spacing:-.045em;line-height:1.08;color:var(--st-accent);margin-top:4px}
+.au-to span{display:block;font-size:16px;color:var(--st-ink2);margin-top:2px}
+.au-tprog{position:absolute;left:48px;right:48px;bottom:22px;height:4px;border-radius:3px;background:var(--st-hair);overflow:hidden}
+.au-tprog i{display:block;height:100%;background:var(--st-hi)}
+.au-ttap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.5);box-shadow:0 0 0 2.5px rgba(255,255,255,.9),0 6px 16px rgba(0,0,0,.35);opacity:0}
+.au-tintro,.au-tend{position:absolute;inset:0;background:var(--st-ground);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.au-tintro .au-lede{margin-top:18px}
+.au-te-h{font-size:46px;line-height:1.08;font-weight:700;letter-spacing:-.035em;margin:0;max-width:18ch;text-wrap:balance}
+.au-te-n{display:flex;gap:64px;margin-top:30px}
+.au-te-n small{display:block;font-size:14px;color:var(--st-ink2)}
+.au-te-n b{display:block;font-size:76px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--st-accent);margin:4px 0 6px}
+.au-te-n span{font-size:15px;color:var(--st-ink2)}
+.au-te-q{display:flex;align-items:center;gap:18px;margin-top:34px;background:var(--st-card);border-radius:20px;padding:12px 24px 12px 12px;text-align:left}
+.au-te-q img{width:104px;height:104px;border-radius:10px;image-rendering:pixelated}
+.au-te-q b{display:block;font-size:18px;font-weight:600}
+.au-te-q span{display:block;font-size:15px;color:var(--st-link);margin-top:3px}
+.au-te-f{position:absolute;bottom:44px;left:0;right:0;font-size:13px;color:var(--st-ink3);margin:0}
+
+/* ---------- screen engine (layout only, no colours) ---------- */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--b-bg);color:var(--b-ink);font-family:var(--b-font);
+     transform:translateX(100%);transition:transform .32s cubic-bezier(.3,.7,.2,1);overflow:hidden;text-align:left;line-height:normal;font-size:16px}
+.scr.is-active{transform:none;z-index:2}.scr.is-past{transform:translateX(-28%)}.scr.under{transform:none;z-index:1}
+.scr.sheet{transform:translateY(100%)}.scr.sheet.is-active{transform:none}
+.nofx,.nofx *{transition:none!important}
+.shot .scr{transition:none!important}
+/* ?phone — just the device at (10,10), for shoot.sh and hero-stills.sh (&clear = transparent ground) */
+.phoneonly body{background:#141615}
+.phoneonly.clear body{background:transparent}
+.phoneonly body *{visibility:hidden}
+.phoneonly .phone,.phoneonly .phone *{visibility:visible}
+.phoneonly .phone{position:fixed;top:10px;left:10px;z-index:99;box-shadow:none;max-width:none;margin:0}
+
+/* SCREENS:START — styles for the app's screens. RULE: colours only via var(--b-*), or white/black
+   with alpha (scrims, shadows). RULE: no class name that the audit page above already uses
+   (.hero .btn .chip .list .idea .note .stat .band .num .hint .display .split …) — brand-check refuses collisions. */
+.body{flex:1;display:flex;flex-direction:column;padding:60px 20px 28px;gap:12px;overflow:auto;position:relative;z-index:1}
+.back{align-self:flex-start;background:none;border:0;color:var(--b-ink);padding:0;cursor:pointer;display:flex;width:28px;height:28px;align-items:center;justify-content:center;flex:none}
+.back svg{width:22px;height:22px}
+.topbar{display:flex;align-items:center;gap:14px}
+.prog{flex:1;height:4px;border-radius:4px;background:var(--b-line);overflow:hidden}.prog i{display:block;height:100%;background:var(--b-primary)}
+.h1{font-weight:800;font-size:26px;line-height:1.15;margin:8px 0 0;letter-spacing:-.01em}
+.sub{color:var(--b-ink2);font-size:15px;line-height:1.4;margin:0}
+.cta{margin-top:auto;width:100%;border:0;border-radius:var(--b-pill);background:var(--b-primary);color:var(--b-primary-ink);font:700 16px var(--b-font);padding:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta:disabled{opacity:.4;cursor:default}
+.cta svg{width:16px;height:16px;flex:none}
+.lnk{background:none;border:0;color:var(--b-ink2);font:600 15px var(--b-font);padding:12px;cursor:pointer;width:100%}
+.legal{display:flex;justify-content:center;gap:18px;font-size:12px;color:var(--b-ink2)}
+.x{position:absolute;top:56px;right:16px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(0,0,0,.18);color:#fff;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center}
+.x svg{width:14px;height:14px}
+.pill{display:inline-flex;align-items:center;gap:4px;border:1.5px solid var(--b-ink);border-radius:var(--b-pill);padding:7px 14px;font:600 14px var(--b-font);color:var(--b-ink);background:var(--b-surface)}
+.stars{display:inline-flex;gap:1px;color:var(--b-star)}.stars svg{width:14px;height:14px}
+/* logo — their wordmark: dark text + red heart on light, all white on red */
+.ihl{display:inline-flex}.ihl svg{width:84px;height:auto}
+.ihl .iheart-text{fill:var(--b-ink)}.ihl .heart{fill:var(--b-primary)}
+.ihl.wht .iheart-text,.ihl.wht .heart{fill:#fff}
+
+/* welcome — their App Store art: bright red, darker red curve, white type */
+.scr.wl{background:radial-gradient(150% 62% at 118% -6%,var(--b-primary) 62%,transparent 62.4%),var(--b-accent2);color:#fff}
+.wl-in{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 26px 34px;text-align:center}
+.wl-copy{margin-top:auto;margin-bottom:auto;padding-top:120px}
+.wl-copy p{margin:0;font-weight:700;font-size:24px;line-height:1.5;letter-spacing:.01em}
+.wl-copy .wl-free{font-weight:900;font-size:40px;letter-spacing:.06em;margin-top:22px}
+.wl-logo{margin:0 0 34px}.wl-logo svg{width:190px}
+.wl-cta{width:100%;border:0;border-radius:var(--b-pill);background:#fff;color:var(--b-primary);font:800 16px var(--b-font);padding:16px;cursor:pointer}
+.wl-sec{width:100%;margin-top:10px;border:1.5px solid rgba(255,255,255,.85);border-radius:var(--b-pill);background:none;color:#fff;font:700 16px var(--b-font);padding:14.5px;cursor:pointer}
+
+/* station picker */
+.stgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px 10px;margin-top:6px}
+.stt{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:var(--b-font);color:var(--b-ink);text-align:center}
+.stt .lg{position:relative;width:96px;height:96px;border-radius:var(--b-radius);background:var(--b-surface);box-shadow:0 1px 4px rgba(0,0,0,.14);display:block;border:2.5px solid transparent;overflow:hidden}
+.stt .lg img{width:100%;height:100%;object-fit:cover;display:block}
+.stt b{font-size:12.5px;font-weight:700;margin-top:4px;line-height:1.2}
+.stt small{font-size:11px;color:var(--b-ink2);line-height:1.2}
+.stt .ck{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;background:var(--b-primary);color:#fff;display:none;align-items:center;justify-content:center}
+.stt .ck svg{width:13px;height:13px}
+.stt.on .lg{border-color:var(--b-primary)}.stt.on .ck{display:flex}
+
+/* home with presets — their home screen */
+.hm-h{position:absolute;top:52px;left:0;right:0;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--b-bg);z-index:2}
+.hm-ic{display:flex;gap:20px;color:var(--b-ink);align-items:center}.hm-ic svg{width:22px;height:22px;display:block}
+.bell{position:relative;display:block}.bell i{position:absolute;top:-5px;right:-6px;background:var(--b-primary);color:#fff;font:700 10px var(--b-font);font-style:normal;border-radius:9px;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center}
+.hm{position:absolute;top:98px;left:0;right:0;bottom:82px;overflow:hidden;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.toast{display:flex;gap:10px;align-items:center;background:var(--b-ink);color:#fff;border-radius:var(--b-radius);padding:11px 14px;font-size:14px}
+.toast svg{width:18px;height:18px;flex:none;color:var(--b-surface);background:var(--b-primary);border-radius:50%;padding:3px}
+.card{background:var(--b-surface);border-radius:16px;padding:14px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.sec-h{display:flex;align-items:center;gap:8px;font-size:19px;margin-bottom:12px}.sec-h svg{width:18px;height:18px;flex:none}
+.sec-h b{font-weight:700}.pen{margin-left:auto;display:flex}
+.loc{margin-left:auto;display:flex;align-items:center;gap:4px;border:1.5px solid var(--b-line2);border-radius:var(--b-pill);padding:4px 10px;font-size:13px;font-weight:600;color:var(--b-blue)}.loc svg{width:12px;height:12px}
+.pr-row{display:flex;gap:9px;overflow:hidden}
+.pr-t{width:64px;height:64px;flex:none;border-radius:10px;background:var(--b-surface);box-shadow:0 1px 4px rgba(0,0,0,.16);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.pr-t img{width:100%;height:100%;object-fit:cover}
+.pr-t.add{background:var(--b-line);box-shadow:none;color:var(--b-ink3)}.pr-t.add svg{width:20px;height:20px}
+.dial{display:flex;gap:9px}
+.dc{flex:1;display:flex;justify-content:space-between;align-items:flex-end;gap:6px;border:1px solid var(--b-line);border-radius:10px;padding:9px 9px 9px 11px;min-width:0}
+.dc b{display:block;font-size:13.5px;white-space:nowrap}.dc span{display:block;font-size:11.5px;color:var(--b-ink2);line-height:1.25;margin-top:2px}
+.pl{width:22px;height:22px;border-radius:50%;background:var(--b-primary);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}.pl svg{width:9px;height:9px;margin-left:1px}
+.scan{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--b-line);border-radius:var(--b-pill);padding:8px;color:var(--b-primary);font-weight:600;font-size:14px}.scan svg{width:16px;height:16px}
+.h2s{font-size:19px;font-weight:700;margin:4px 0 -2px}
+.pills{display:flex;gap:8px}
+.hm-cta{position:absolute;left:16px;right:16px;bottom:12px;width:auto;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.trend{display:flex;align-items:center;gap:12px}
+.tr-n{font-size:40px;font-weight:200;color:var(--b-primary);width:26px;text-align:center;line-height:1}
+.tr-c{flex:1;display:flex;align-items:center;gap:12px;background:var(--b-surface);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.tr-c img{width:54px;height:54px;object-fit:cover}.tr-c b{font-size:14px;font-weight:600}
+/* tab bar */
+.tbar{position:absolute;left:0;right:0;bottom:0;height:82px;background:var(--b-surface);border-top:1px solid var(--b-line);display:flex;justify-content:space-around;padding:8px 6px 0;z-index:3}
+.tbar span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--b-ink3);width:64px}
+.tbar svg{width:23px;height:23px}.tbar .on{color:var(--b-primary)}
+
+/* now playing — their player (flex column so it fits shorter phones) */
+.scr.np{padding:52px 0 90px}
+.np-h{display:flex;align-items:center;gap:10px;padding:6px 14px;flex:none}
+.np-th{width:42px;height:42px;border-radius:6px;object-fit:cover}
+.np-ht{flex:1;min-width:0}.np-ht b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.np-ht span{font-size:14px;color:var(--b-ink2)}
+.np-hi{display:flex;gap:14px;color:var(--b-ink)}.np-hi svg{width:21px;height:21px}
+.np-pills{margin:4px 14px 0;display:flex;gap:8px;align-items:center;flex:none}
+.np-pills .pill{padding:5px 12px;font-size:13.5px}
+.np-mic{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--b-primary);color:#fff;display:flex;align-items:center;justify-content:center}.np-mic svg{width:17px;height:17px}
+.np-stop0{width:36px;height:36px;border-radius:50%;background:var(--b-ink);display:flex;align-items:center;justify-content:center}.np-stop0 i{width:11px;height:11px;background:#fff;border-radius:2px}
+.np-tabs{margin:12px 14px 0;display:flex;gap:26px;font-size:15.5px;font-weight:600;border-bottom:1px solid var(--b-line);color:var(--b-ink3);flex:none}
+.np-tabs span{padding:8px 0}.np-tabs .on{color:var(--b-ink);box-shadow:inset 0 -2.5px var(--b-primary)}
+.np-live{margin:12px 24px 8px;display:flex;align-items:center;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--b-primary);flex:none}
+.np-live i{width:7px;height:7px;border-radius:50%;background:var(--b-primary);margin-right:6px}
+.np-live b{color:var(--b-ink);letter-spacing:0}
+.np-art{flex:0 1 322px;min-height:0;width:auto;max-width:calc(100% - 48px);aspect-ratio:1;align-self:center;border-radius:12px;object-fit:cover;box-shadow:0 6px 20px rgba(0,0,0,.14)}
+.np-ti{margin:14px 24px 0;display:flex;justify-content:space-between;align-items:center;flex:none}
+.np-ti b{display:block;font-size:20px}.np-ti span{font-size:15px;color:var(--b-ink2)}
+.np-th2{display:flex;gap:16px;color:var(--b-ink)}.np-th2 svg{width:24px;height:24px}
+.np-ctl{margin:18px 22px 0;display:flex;align-items:center;justify-content:space-between;flex:none}
+.np-q{color:var(--b-ink);display:flex}.np-q svg{width:26px;height:26px}
+.np-rp{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--b-primary);font:700 11px var(--b-font);cursor:pointer;padding:0;position:relative}
+.np-rp svg{width:30px;height:30px}
+.np-rp::before{content:"";position:absolute;top:-7px;left:50%;width:44px;height:44px;margin-left:-22px;border-radius:50%;box-shadow:0 0 0 2px var(--b-primary);opacity:.35;animation:rpPulse 1.8s ease-out infinite}
+@keyframes rpPulse{0%{transform:scale(.8);opacity:.5}100%{transform:scale(1.35);opacity:0}}
+.shot .np-rp::before{animation:none;opacity:.3;transform:scale(1.05)}
+.np-stop{width:60px;height:60px;border-radius:50%;background:var(--b-ink);border:0;display:flex;align-items:center;justify-content:center;cursor:pointer}.np-stop i{width:18px;height:18px;background:#fff;border-radius:3px}
+.np-ly{padding:5px 13px;font-size:13.5px}
+.np-tip{margin:8px 0 0;text-align:center;font-size:12.5px;color:var(--b-ink2);flex:none}
+
+/* bottom sheets: replay (proof) and offer on close */
+.scr.rs{background:transparent}
+.rs-dim{position:absolute;inset:0;background:rgba(0,0,0,.42)}
+.rs-card{position:absolute;left:0;right:0;bottom:0;background:var(--b-surface);border-radius:22px 22px 0 0;padding:10px 22px 26px;display:flex;flex-direction:column;gap:12px}
+.rs-grab{width:38px;height:5px;border-radius:3px;background:var(--b-line);align-self:center;margin-bottom:4px}
+.rs-song{display:flex;gap:12px;align-items:center;background:var(--b-bg);border-radius:var(--b-radius);padding:10px}
+.rs-song img{width:58px;height:58px;border-radius:8px;object-fit:cover}
+.rs-song small{display:block;font-size:12px;color:var(--b-primary);font-weight:700}
+.rs-song b{display:block;font-size:16px;margin-top:2px}.rs-song span{font-size:14px;color:var(--b-ink2)}
+.rs-h{font-size:24px;font-weight:800;line-height:1.15;margin:4px 0 0}
+.rs-proof{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--b-ink2);border-top:1px solid var(--b-line);border-bottom:1px solid var(--b-line);padding:10px 0}
+.rs-proof{flex-wrap:wrap;row-gap:2px}.rs-proof b{color:var(--b-ink);white-space:nowrap}
+.rs-card .cta{margin-top:4px}
+.rs-card .lnk{padding:6px}
+.of-k{margin:0;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--b-primary)}
+.of-plan{border:2px solid var(--b-primary);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;position:relative}
+.of-top{display:flex;justify-content:space-between;align-items:baseline}.of-top>b{font-size:17px}
+.of-pr b{font-size:22px;font-weight:800}.of-pr small{font-size:13px;color:var(--b-ink2)}
+.of-li{display:flex;gap:8px;align-items:center;margin:0;font-size:14.5px}.of-li svg{width:16px;height:16px;color:var(--b-primary);flex:none}
+.of-save{align-self:flex-start;background:var(--b-bg);color:var(--b-primary);font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:var(--b-pill)}
+
+/* paywall — red band in their art direction, then the two plans */
+.scr.pw{background:var(--b-bg)}
+.pw-top{background:radial-gradient(130% 80% at 112% -12%,var(--b-primary) 58%,transparent 58.4%),var(--b-accent2);color:#fff;padding:62px 24px 26px;border-radius:0 0 26px 26px}
+.pw-top .ihl svg{width:76px}
+.pw-h{font-size:27px;line-height:1.15;font-weight:800;margin:16px 0 6px;letter-spacing:-.01em}
+.pw-sub{margin:0;font-size:15px;opacity:.92}
+.pw-b{flex:1;display:flex;flex-direction:column;gap:10px;padding:16px 18px 22px}
+.tier{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--b-surface);border:2px solid var(--b-line);border-radius:16px;padding:13px 14px;cursor:pointer;font-family:var(--b-font);color:var(--b-ink);width:100%}
+.tier.on{border-color:var(--b-primary);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.rd{width:20px;height:20px;border-radius:50%;border:2px solid var(--b-line2);flex:none;margin-top:1px}
+.tier.on .rd{border:6px solid var(--b-primary)}
+.tier-m{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.tier-n{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.tier-n b{font-size:15.5px}
+.tier-n em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--b-primary);color:#fff;padding:2px 7px;border-radius:5px}
+.tier-l{font-size:13px;color:var(--b-ink2);line-height:1.3}
+.tier-p{text-align:right;white-space:nowrap}.tier-p b{display:block;font-size:18px;font-weight:800}.tier-p small{font-size:12px;color:var(--b-ink2)}
+.pw-diff{margin:2px 2px 0;font-size:13.5px;color:var(--b-ink2);line-height:1.4}.pw-diff b{color:var(--b-ink)}
+.pw-proof{display:flex;gap:7px;align-items:center;font-size:13px;color:var(--b-ink2);padding:0 2px}
+.pw-b .cta{margin-top:auto}
+.pw-legal{margin:-2px 0 0;text-align:center;font-size:12px;color:var(--b-ink2)}
+/* SCREENS:END */
+</style>
+</head>
+<body>
+
+<nav class="au-nav" aria-label="Sections">
+  <div class="au-nav-in">
+    <div class="au-brand">
+      <img src="assets/brand/appstore-icon.jpg" alt="">
+      <span>Growth Audit <small>· iHeart</small></span>
+    </div>
+    <a class="au-opt" href="#why">Why this</a>
+    <a href="#ideas">Five ideas</a>
+    <a href="#prototype">Prototype</a>
+    <a class="au-opt" href="#compare" id="navCompare" hidden>Paywall</a>
+  </div>
+</nav>
+
+<header class="au-top-hero" id="top">
+  <div class="au-wrap">
+    <p class="au-eyebrow"><i></i>Growth Audit · October 2026</p>
+    <h1 class="au-display">iHeart</h1>
+    <p class="au-lede">Five ideas to turn more iHeart listeners into subscribers. <span>Each one built into your own onboarding, so you can tap through it.</span></p>
+    <p class="au-byline">Prepared by Adapty for the iHeart team</p>
+    <div class="au-ctas">
+      <a class="au-btn" href="#ideas">See the five ideas</a>
+      <a class="au-lnk" href="#prototype">Open the prototype</a>
+      <button type="button" class="au-lnk au-play" id="heroVideo" hidden>Watch the 30-second walkthrough</button>
+    </div>
+  </div>
+  <!-- filled from CONTENT.hero: three screen ids → assets/hero/<id>.png (make them with hero-stills.sh) -->
+  <div class="au-phones" id="heroPhones" aria-label="Three screens from the prototype"></div>
+</header>
+
+<section class="au-sec au-white" id="why">
+  <div class="au-wrap">
+    <div class="au-split">
+      <div>
+        <p class="au-kicker">Why you’re seeing this</p>
+        <h2 class="au-h2">30,000 subscription apps taught us what moves conversion. <span>Here’s what we’d test first at iHeart.</span></h2>
+      </div>
+      <div>
+        <p>Adapty runs subscriptions for <b>more than 30,000 apps</b>, so we see which onboarding and paywall changes lift revenue across the whole market, not just inside one app.</p>
+        <p>We pointed that at iHeart. We took <b>your own screens, copy and prices</b> from your App Store listing and site, and rebuilt the path from install to paywall around the five ideas with the most potential.</p>
+      </div>
+    </div>
+    <div class="au-stats">
+      <div class="au-stat"><b>30,000+</b><span>apps run their subscriptions on Adapty</span></div>
+      <div class="au-stat"><b>5</b><span>ideas, each built as a working screen</span></div>
+      <div class="au-stat"><b>0</b><span>changes to your art direction</span></div>
+    </div>
+    <div class="au-notes">
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg></div>
+        <h3>Five ideas, not fifteen</h3>
+        <p>We’re not proposing to rebuild every screen. These are the changes with the highest potential, ranked by what we’d test first.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg></div>
+        <h3>Your design, not ours</h3>
+        <p>Every colour, control and price in the prototype is iHeart’s. We changed the order and what gets shown.</p>
+      </div>
+      <div class="au-note">
+        <div class="au-ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4H15"/></svg></div>
+        <h3>We hope you haven’t tried these yet</h3>
+        <p>We work from the outside, so we can’t see your live flow or your test history. If you’ve already run one of these, tell us and we’ll go deeper on the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec" id="ideas">
+  <div class="au-wrap">
+    <div class="au-ideas-h">
+      <p class="au-kicker">The shortlist</p>
+      <h2 class="au-h2">Five ideas. <span>Ranked by what we’d test first.</span></h2>
+    </div>
+    <div class="au-list" id="ideaList"></div>
+    <div class="au-band">
+      <div>
+        <p class="au-k">Potential outcome, based on Adapty data</p>
+        <h3>Together they work on three moments: the first minute in the app, the song someone wants back, and what happens when they say no.</h3>
+        <p class="au-fn" id="bandFn"></p>
+        <a class="au-btn" href="#prototype">Tap through the prototype</a>
+      </div>
+      <div class="au-nums" id="bandNums"></div>
+    </div>
+  </div>
+</section>
+
+<section class="au-sec au-white" id="prototype">
+  <div class="au-wrap">
+    <div class="au-proto-h">
+      <p class="au-kicker">The prototype</p>
+      <h2 class="au-h2">Every idea, inside your own onboarding.</h2>
+      <p>Tap through it like a new user, or jump straight to an idea. Red numbers mark the screens that carry one.</p>
+    </div>
+    <div class="au-langrow" id="langRow" hidden><span>Prototype language</span><div class="au-lsw" id="langSw" role="group" aria-label="Prototype language"></div></div>
+    <div class="au-seg" id="chips" role="tablist" aria-label="Screens"></div>
+    <div class="au-stage">
+      <div class="phone"><div class="phone-in">
+        <div class="island"></div>
+        <div class="sbar"><span>9:41</span><span>●●● ▮</span></div>
+
+<!-- SCREENS:START — one section.scr[data-id=ID] per screen, in flow order. Only the screens an idea lands on,
+     plus the context needed to read the flow (~8–10). Wiring: data-go="<id>" · data-back · data-pick="key:value"
+     (+ data-advance="<id>") · data-toggle="key:value" · data-bind="key" / "label:key" / "count:key" ·
+     data-requires="key" · data-show="key:value" · data-input="key" · class="scr sheet" slides up (offer paywall).
+     RULE: images only from assets/ (their app, their site, App Store) — never stock, never hotlinked.
+     Extras: data-t="key" = translatable (markup is CONTENT.langs[0]; other languages in CONTENT.i18n) — keep data-t on
+     leaf-ish elements, never on an element that also carries data-bind/data-pick/data-show;
+     data-langtoggle cycles the language (their own language pill); data-aside keeps a screen out of the flow
+     (the paywall TODAY, rendered only for the side-by-side still). -->
+
+<section class="scr wl" data-id="welcome">
+  <div class="wl-in">
+    <div class="wl-copy">
+      <p data-t="w1">Your Music</p>
+      <p data-t="w2">Your Stations</p>
+      <p data-t="w3">Your Podcasts</p>
+      <p class="wl-free" data-t="w4">ALL FREE</p>
+    </div>
+    <div class="ihl wht wl-logo"><svg aria-label="iHeart" role="img" fill="none" viewBox="0 0 106 25" xmlns="http://www.w3.org/2000/svg"><path class="iheart-text" clip-rule="evenodd" d="M35.8402 6.99053V22.0576H32.1369V6.99053H35.8402ZM33.9885 1.50003C35.1878 1.50003 36.1789 2.48919 36.1789 3.68593C36.1789 4.88269 35.1878 5.87173 33.9885 5.87173C32.7893 5.87173 31.7979 4.88269 31.7979 3.68593C31.7979 2.48919 32.7893 1.50003 33.9885 1.50003Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M49.3464 22.0576V13.9125H41.393V22.0576H37.6901V2.54082H41.393V10.6342H49.3464V2.54082H53.0497V22.0576H49.3464Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M66.7109 13.054C66.3456 11.2325 64.833 9.67134 62.5643 9.67134C60.3218 9.67134 58.7046 11.2325 58.3396 13.054H66.7109ZM70.4659 16.1509H58.2878C58.6792 17.8164 60.4002 19.2996 62.5125 19.2996C64.0768 19.2996 65.3027 18.4665 65.9022 17.5299H69.9188C68.8496 20.5743 65.8767 22.5 62.5125 22.5C58.0005 22.5 54.3239 19.0648 54.3239 14.511C54.3239 9.95697 58.0268 6.548 62.5643 6.548C67.0242 6.548 70.6749 10.0612 70.6749 14.511C70.6749 15.0838 70.5966 15.5779 70.4659 16.1509Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M80.0065 9.87892C77.4507 9.87892 75.3904 11.9869 75.3904 14.511C75.3904 17.0612 77.4507 19.1691 80.0065 19.1691C82.5876 19.1691 84.6219 17.0612 84.6219 14.511C84.6219 11.9869 82.5876 9.87892 80.0065 9.87892ZM84.6219 19.6378H84.5702C83.7351 21.043 82.0662 22.5 79.5368 22.5C75.1297 22.5 71.5308 19.0911 71.5308 14.511C71.5308 9.95697 75.1297 6.548 79.5368 6.548C81.9101 6.548 83.527 7.77108 84.5702 9.1763H84.6219V6.99052H88.3252V22.0576H84.6219V19.6378Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M90.0153 6.99054H93.7185V9.07207H93.7703C94.5536 7.74569 95.6745 6.54802 97.6045 6.54802H97.9695V10.2951H97.0564C95.2831 10.2951 93.8495 11.675 93.7185 13.4185V22.0576H90.0153V6.99054Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M99.2443 9.95699V6.99054H100.6V3.58168H104.303V6.99054H106.885V9.95699H104.303V17.8681C104.303 18.3885 104.721 18.7792 105.19 18.7792H106.885V22.0576H105.19C102.478 22.0576 100.6 20.3404 100.6 17.6079V9.95699H99.2443Z" fill-rule="evenodd"></path><path class="heart" d="M25.8641 8.73934C25.8641 10.8613 24.7147 12.953 22.4487 14.9575C22.3487 15.0458 22.224 15.089 22.0999 15.089C21.9551 15.089 21.8105 15.0298 21.7064 14.9125C21.5139 14.6958 21.5335 14.3643 21.7515 14.1716C23.7826 12.3758 24.8126 10.548 24.8126 8.73934V8.71394C24.8126 7.24592 23.8897 5.5178 22.7114 4.78055C22.4653 4.62649 22.3912 4.30248 22.5457 4.05742C22.6998 3.81178 23.0245 3.73773 23.2707 3.89129C24.7486 4.81713 25.8641 6.89067 25.8641 8.71394V8.73934ZM19.0392 13.167C18.958 13.2124 18.8699 13.2339 18.7824 13.2339C18.5983 13.2339 18.4196 13.1371 18.3231 12.9656C18.1816 12.7127 18.2718 12.3928 18.5256 12.2515C19.7428 11.5711 20.5615 10.2491 20.5646 8.95867C20.562 7.77273 19.9066 6.69347 18.8529 6.14033C18.5957 6.0052 18.4969 5.68813 18.6322 5.43155C18.7676 5.17532 19.0856 5.07653 19.3425 5.21131C20.7407 5.94503 21.6103 7.3767 21.6166 8.95115V8.9671C21.6099 10.6226 20.5754 12.3085 19.0392 13.167ZM14.8169 11.6252C13.557 11.6246 12.5359 10.6052 12.5359 9.34784C12.5359 8.0905 13.557 7.07115 14.8169 7.07045C16.0768 7.07115 17.0978 8.0905 17.0978 9.34784C17.0978 10.6052 16.0768 11.6246 14.8169 11.6252ZM11.3106 12.9656C11.2141 13.1371 11.0354 13.2339 10.8514 13.2339C10.7638 13.2339 10.6759 13.2124 10.5946 13.167C9.0584 12.3085 8.02385 10.6226 8.01725 8.9671V8.95115C8.0235 7.3767 8.89317 5.94503 10.2912 5.21131C10.5481 5.07653 10.8661 5.17532 11.0015 5.43155C11.1368 5.68813 11.038 6.0052 10.7808 6.14033C9.72712 6.69347 9.07187 7.77273 9.06912 8.95867C9.07231 10.2491 9.89106 11.5711 11.1083 12.2515C11.362 12.3928 11.4522 12.7127 11.3106 12.9656ZM7.92737 14.9125C7.82337 15.0298 7.6786 15.089 7.53392 15.089C7.4097 15.089 7.28516 15.0458 7.18502 14.9575C4.91902 12.953 3.76973 10.8613 3.76973 8.73934V8.71394C3.76973 6.89067 4.88508 4.81713 6.3632 3.89129C6.60925 3.73773 6.93395 3.81178 7.0881 4.05742C7.24269 4.30248 7.16848 4.62649 6.92243 4.78055C5.74402 5.5178 4.82116 7.24592 4.82116 8.71394V8.73934C4.82116 10.548 5.85123 12.3758 7.88227 14.1716C8.10022 14.3643 8.11998 14.6958 7.92737 14.9125ZM21.1597 1.50009C18.5287 1.50009 16.1781 2.89108 14.8169 4.92227C13.4557 2.89108 11.1051 1.50009 8.47415 1.50009C4.28157 1.50009 0.88501 4.88969 0.88501 9.07295C0.88501 11.7271 2.56953 13.6405 4.32942 15.4112L11.2096 21.9023C11.5702 22.2424 12.1636 21.9874 12.1636 21.4923V16.4349C12.1636 14.9717 13.3511 13.7853 14.8169 13.7829C16.2828 13.7853 17.4703 14.9717 17.4703 16.4349V21.4923C17.4703 21.9874 18.0635 22.2424 18.4241 21.9023L25.3044 15.4112C27.0642 13.6405 28.7487 11.7271 28.7487 9.07295C28.7487 4.88969 25.3523 1.50009 21.1597 1.50009Z"></path></svg></div>
+    <button class="wl-cta" data-go="stations"><span data-t="w5">Get started</span></button>
+    <button class="wl-sec" data-go="stations"><span data-t="w6">Log in</span></button>
+  </div>
+</section>
+
+<section class="scr" data-id="stations">
+  <div class="body">
+    <div class="topbar"><button class="back" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="prog"><i style="width:50%"></i></div></div>
+    <h1 class="h1" data-t="s1">Pick stations for your presets</h1>
+    <p class="sub" data-t="s2">Choose a few. They’ll be one tap away every time you open iHeart.</p>
+    <div class="stgrid">
+      <button class="stt" data-toggle="st:z100"><span class="lg"><img src="assets/crop/st-z100.png" alt=""><i class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span><b>Z100</b><small data-t="g1">Pop · New York</small></button>
+      <button class="stt" data-toggle="st:kiis"><span class="lg"><img src="assets/crop/st-kiis.png" alt=""><i class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span><b>102.7 KIIS FM</b><small data-t="g2">Pop · Los Angeles</small></button>
+      <button class="stt" data-toggle="st:real923"><span class="lg"><img src="assets/crop/st-real923.png" alt=""><i class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span><b>Real 92.3</b><small data-t="g3">Hip Hop · Los Angeles</small></button>
+      <button class="stt" data-toggle="st:big98"><span class="lg"><img src="assets/crop/st-big98.png" alt=""><i class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span><b>97.9 The Big 98</b><small data-t="g4">Country · Nashville</small></button>
+      <button class="stt" data-toggle="st:iheart80s"><span class="lg"><img src="assets/crop/st-iheart80s.png" alt=""><i class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span><b>iHeart80s Radio</b><small data-t="g5">80s hits</small></button>
+      <button class="stt" data-toggle="st:news247"><span class="lg"><img src="assets/crop/st-news247.png" alt=""><i class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></span><b>24/7 News</b><small data-t="g6">News · The latest</small></button>
+    </div>
+    <button class="cta" data-go="presets" data-requires="st"><span data-t="s3">Save my presets</span></button>
+  </div>
+</section>
+
+<section class="scr" data-id="presets">
+  <div class="hm-h"><span class="ihl"><svg aria-label="iHeart" role="img" fill="none" viewBox="0 0 106 25" xmlns="http://www.w3.org/2000/svg"><path class="iheart-text" clip-rule="evenodd" d="M35.8402 6.99053V22.0576H32.1369V6.99053H35.8402ZM33.9885 1.50003C35.1878 1.50003 36.1789 2.48919 36.1789 3.68593C36.1789 4.88269 35.1878 5.87173 33.9885 5.87173C32.7893 5.87173 31.7979 4.88269 31.7979 3.68593C31.7979 2.48919 32.7893 1.50003 33.9885 1.50003Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M49.3464 22.0576V13.9125H41.393V22.0576H37.6901V2.54082H41.393V10.6342H49.3464V2.54082H53.0497V22.0576H49.3464Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M66.7109 13.054C66.3456 11.2325 64.833 9.67134 62.5643 9.67134C60.3218 9.67134 58.7046 11.2325 58.3396 13.054H66.7109ZM70.4659 16.1509H58.2878C58.6792 17.8164 60.4002 19.2996 62.5125 19.2996C64.0768 19.2996 65.3027 18.4665 65.9022 17.5299H69.9188C68.8496 20.5743 65.8767 22.5 62.5125 22.5C58.0005 22.5 54.3239 19.0648 54.3239 14.511C54.3239 9.95697 58.0268 6.548 62.5643 6.548C67.0242 6.548 70.6749 10.0612 70.6749 14.511C70.6749 15.0838 70.5966 15.5779 70.4659 16.1509Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M80.0065 9.87892C77.4507 9.87892 75.3904 11.9869 75.3904 14.511C75.3904 17.0612 77.4507 19.1691 80.0065 19.1691C82.5876 19.1691 84.6219 17.0612 84.6219 14.511C84.6219 11.9869 82.5876 9.87892 80.0065 9.87892ZM84.6219 19.6378H84.5702C83.7351 21.043 82.0662 22.5 79.5368 22.5C75.1297 22.5 71.5308 19.0911 71.5308 14.511C71.5308 9.95697 75.1297 6.548 79.5368 6.548C81.9101 6.548 83.527 7.77108 84.5702 9.1763H84.6219V6.99052H88.3252V22.0576H84.6219V19.6378Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M90.0153 6.99054H93.7185V9.07207H93.7703C94.5536 7.74569 95.6745 6.54802 97.6045 6.54802H97.9695V10.2951H97.0564C95.2831 10.2951 93.8495 11.675 93.7185 13.4185V22.0576H90.0153V6.99054Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M99.2443 9.95699V6.99054H100.6V3.58168H104.303V6.99054H106.885V9.95699H104.303V17.8681C104.303 18.3885 104.721 18.7792 105.19 18.7792H106.885V22.0576H105.19C102.478 22.0576 100.6 20.3404 100.6 17.6079V9.95699H99.2443Z" fill-rule="evenodd"></path><path class="heart" d="M25.8641 8.73934C25.8641 10.8613 24.7147 12.953 22.4487 14.9575C22.3487 15.0458 22.224 15.089 22.0999 15.089C21.9551 15.089 21.8105 15.0298 21.7064 14.9125C21.5139 14.6958 21.5335 14.3643 21.7515 14.1716C23.7826 12.3758 24.8126 10.548 24.8126 8.73934V8.71394C24.8126 7.24592 23.8897 5.5178 22.7114 4.78055C22.4653 4.62649 22.3912 4.30248 22.5457 4.05742C22.6998 3.81178 23.0245 3.73773 23.2707 3.89129C24.7486 4.81713 25.8641 6.89067 25.8641 8.71394V8.73934ZM19.0392 13.167C18.958 13.2124 18.8699 13.2339 18.7824 13.2339C18.5983 13.2339 18.4196 13.1371 18.3231 12.9656C18.1816 12.7127 18.2718 12.3928 18.5256 12.2515C19.7428 11.5711 20.5615 10.2491 20.5646 8.95867C20.562 7.77273 19.9066 6.69347 18.8529 6.14033C18.5957 6.0052 18.4969 5.68813 18.6322 5.43155C18.7676 5.17532 19.0856 5.07653 19.3425 5.21131C20.7407 5.94503 21.6103 7.3767 21.6166 8.95115V8.9671C21.6099 10.6226 20.5754 12.3085 19.0392 13.167ZM14.8169 11.6252C13.557 11.6246 12.5359 10.6052 12.5359 9.34784C12.5359 8.0905 13.557 7.07115 14.8169 7.07045C16.0768 7.07115 17.0978 8.0905 17.0978 9.34784C17.0978 10.6052 16.0768 11.6246 14.8169 11.6252ZM11.3106 12.9656C11.2141 13.1371 11.0354 13.2339 10.8514 13.2339C10.7638 13.2339 10.6759 13.2124 10.5946 13.167C9.0584 12.3085 8.02385 10.6226 8.01725 8.9671V8.95115C8.0235 7.3767 8.89317 5.94503 10.2912 5.21131C10.5481 5.07653 10.8661 5.17532 11.0015 5.43155C11.1368 5.68813 11.038 6.0052 10.7808 6.14033C9.72712 6.69347 9.07187 7.77273 9.06912 8.95867C9.07231 10.2491 9.89106 11.5711 11.1083 12.2515C11.362 12.3928 11.4522 12.7127 11.3106 12.9656ZM7.92737 14.9125C7.82337 15.0298 7.6786 15.089 7.53392 15.089C7.4097 15.089 7.28516 15.0458 7.18502 14.9575C4.91902 12.953 3.76973 10.8613 3.76973 8.73934V8.71394C3.76973 6.89067 4.88508 4.81713 6.3632 3.89129C6.60925 3.73773 6.93395 3.81178 7.0881 4.05742C7.24269 4.30248 7.16848 4.62649 6.92243 4.78055C5.74402 5.5178 4.82116 7.24592 4.82116 8.71394V8.73934C4.82116 10.548 5.85123 12.3758 7.88227 14.1716C8.10022 14.3643 8.11998 14.6958 7.92737 14.9125ZM21.1597 1.50009C18.5287 1.50009 16.1781 2.89108 14.8169 4.92227C13.4557 2.89108 11.1051 1.50009 8.47415 1.50009C4.28157 1.50009 0.88501 4.88969 0.88501 9.07295C0.88501 11.7271 2.56953 13.6405 4.32942 15.4112L11.2096 21.9023C11.5702 22.2424 12.1636 21.9874 12.1636 21.4923V16.4349C12.1636 14.9717 13.3511 13.7853 14.8169 13.7829C16.2828 13.7853 17.4703 14.9717 17.4703 16.4349V21.4923C17.4703 21.9874 18.0635 22.2424 18.4241 21.9023L25.3044 15.4112C27.0642 13.6405 28.7487 11.7271 28.7487 9.07295C28.7487 4.88969 25.3523 1.50009 21.1597 1.50009Z"></path></svg></span><span class="hm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><span class="bell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5a6.5 6.5 0 0 0-6.5 6.5v4.2L3.8 16.5c-.3.6.1 1.3.8 1.3h14.8c.7 0 1.1-.7.8-1.3l-1.7-3.3V9A6.5 6.5 0 0 0 12 2.5zM9.5 19.5a2.5 2.5 0 0 0 5 0z"/></svg><i>1</i></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM12 15.3a3.3 3.3 0 1 1 0-6.6 3.3 3.3 0 0 1 0 6.6z"/></svg></span></div>
+  <div class="hm">
+    <div class="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b data-bind="count:st"></b> <span data-t="p1">stations saved to your presets</span></span></div>
+    <div class="card">
+      <div class="sec-h"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><b data-t="p2">Presets</b><span class="pen"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.3V21h3.7L17.8 9.9l-3.7-3.7zM20.7 7a1 1 0 0 0 0-1.4l-2.3-2.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.7 3.7z"/></svg></span></div>
+      <div class="pr-row" id="prRow"></div>
+    </div>
+    <div class="card">
+      <div class="sec-h"><b data-t="p3">Live Radio Dial</b><span class="loc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 3L3 10.5l7.5 3 3 7.5z"/></svg> New Y…</span></div>
+      <div class="dial">
+        <div class="dc"><div><b>106.7 Lite FM</b><span>New York’s Best Variety</span></div><i class="pl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></i></div>
+        <div class="dc"><div><b>Z100 (100.3)</b><span>New York’s #1 Hit Music Station</span></div><i class="pl"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></i></div>
+      </div>
+      <div class="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/></svg> <span data-t="p4">Scan Stations</span></div>
+    </div>
+    <h2 class="h2s" data-t="p5">Your Library</h2>
+    <div class="pills"><span class="pill" data-t="p6">Stations</span><span class="pill" data-t="p7">Podcasts</span><span class="pill" data-t="p8">Playlists</span></div>
+    <h2 class="h2s tr-h" data-t="p10">Trending on iHeart</h2>
+    <div class="trend"><span class="tr-n">1</span><span class="tr-c"><img src="assets/crop/pod-onpurpose.png" alt=""><b>Tom Hanks Chats With Jay Shetty</b></span></div>
+    <button class="cta hm-cta" data-go="nowplaying"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg><span><span data-t="p9">Start listening to</span> <span class="lead-name"></span></span></button>
+  </div>
+  <nav class="tbar"><span class="on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L3 10v11h6v-6h6v6h6V10z"/></svg><span data-t="t1">Home</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><span data-t="t2">Search</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="2.2"/><path d="M8.2 7.2a5.4 5.4 0 0 0 0 7.6M15.8 7.2a5.4 5.4 0 0 1 0 7.6M5.4 4.4a9.4 9.4 0 0 0 0 13.2M18.6 4.4a9.4 9.4 0 0 1 0 13.2M12 13.5V21"/></svg><span data-t="t3">Radio</span></span><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a4 4 0 0 0-4 4v5a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4zm-1 17.9V22h2v-2.1a8 8 0 0 0 7-7.9h-2a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.9z"/></svg><span data-t="t4">Podcasts</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 11h16M4 16h9M17 14.5v6l4-3z"/></svg><span data-t="t5">Playlists</span></span></nav>
+</section>
+
+<section class="scr np" data-id="nowplaying">
+  <div class="np-h"><button class="back" data-back aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><img class="np-th" src="assets/crop/art-showgirl.png" alt=""><div class="np-ht"><b>The Life of a Showgirl</b><span>Taylor Swift</span></div><span class="np-hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5M5 12v7.5h14V12"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span></div>
+  <div class="np-pills"><span class="pill">+ <span data-t="n1">Library</span></span><span class="pill">+ <span data-t="n2">Preset</span></span><span class="np-mic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14.5a3.5 3.5 0 0 0 3.5-3.5V5.5a3.5 3.5 0 0 0-7 0V11a3.5 3.5 0 0 0 3.5 3.5zM18 11h-1.8a4.2 4.2 0 0 1-8.4 0H6a6 6 0 0 0 5 5.9V20h2v-3.1a6 6 0 0 0 5-5.9z"/></svg></span><span class="np-stop0"><i></i></span></div>
+  <div class="np-tabs"><span class="on" data-t="n3">Now Playing</span><span data-t="n4">Station</span><span data-t="n5">Contests</span></div>
+  <div class="np-live"><i></i><span data-t="n6">LIVE ON</span>&nbsp;<b class="lead-name"></b></div>
+  <img class="np-art" src="assets/crop/art-showgirl.png" alt="The Life of a Showgirl cover art">
+  <div class="np-ti"><div><b>The Life of a Showgirl</b><span>Taylor Swift</span></div><span class="np-th2"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 3h-3.5v11.5H22zM2 13.5c0 1.1.9 2 2 2h6.3l-1 4.6v.3c0 .4.2.8.4 1.1l1.1 1 6.6-6.6c.4-.4.6-.9.6-1.4V5c0-1.1-.9-2-2-2H7c-.8 0-1.5.5-1.8 1.2l-3 7.1c-.1.2-.2.5-.2.7z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21h3.5V9.5H2zM22 10.5c0-1.1-.9-2-2-2h-6.3l1-4.6v-.3c0-.4-.2-.8-.4-1.1L13.2 1.5 6.6 8.1c-.4.4-.6.9-.6 1.4V19c0 1.1.9 2 2 2h9c.8 0 1.5-.5 1.8-1.2l3-7.1c.1-.2.2-.5.2-.7z"/></svg></span></div>
+  <div class="np-ctl">
+    <span class="np-q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h12M3 11h12M3 16h7M17 13v8M13 17h8"/></svg></span>
+    <button class="np-rp" data-go="replay" aria-label="Replay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 3.5V8h4.5"/><path d="M10 9.5v5l4-2.5z" fill="currentColor"/></svg><span data-t="n7">Replay</span></button>
+    <button class="np-stop" aria-label="Stop"><i></i></button>
+    <span class="pill np-ly" data-t="n8">Lyrics</span>
+  </div>
+  <p class="np-tip" data-t="n9">Missed the start? Hear it again.</p>
+  <nav class="tbar"><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L3 10v11h6v-6h6v6h6V10z"/></svg><span data-t="t1">Home</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><span data-t="t2">Search</span></span><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="2.2"/><path d="M8.2 7.2a5.4 5.4 0 0 0 0 7.6M15.8 7.2a5.4 5.4 0 0 1 0 7.6M5.4 4.4a9.4 9.4 0 0 0 0 13.2M18.6 4.4a9.4 9.4 0 0 1 0 13.2M12 13.5V21"/></svg><span data-t="t3">Radio</span></span><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a4 4 0 0 0-4 4v5a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4zm-1 17.9V22h2v-2.1a8 8 0 0 0 7-7.9h-2a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.9z"/></svg><span data-t="t4">Podcasts</span></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 11h16M4 16h9M17 14.5v6l4-3z"/></svg><span data-t="t5">Playlists</span></span></nav>
+</section>
+
+<section class="scr sheet rs" data-id="replay">
+  <div class="rs-dim"></div>
+  <div class="rs-card">
+    <div class="rs-grab"></div>
+    <div class="rs-song"><img src="assets/crop/art-showgirl.png" alt=""><div><small><span data-t="r1">Just played on</span> <span class="lead-name"></span></small><b>The Life of a Showgirl</b><span>Taylor Swift</span></div></div>
+    <h2 class="rs-h" data-t="r2">Hear it again from the top</h2>
+    <p class="sub" data-t="r3">Replay any song you hear on the radio, skip without limits and listen ad-free with iHeartRadio Plus or All Access.</p>
+    <div class="rs-proof"><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg></span><b data-t="r4">4.8 · 647K ratings</b><span data-t="r5">on the App Store</span></div>
+    <button class="cta" data-go="paywall"><span data-t="r6">See plans</span></button>
+    <button class="lnk" data-back><span data-t="r7">Not now</span></button>
+  </div>
+</section>
+
+<section class="scr pw" data-id="paywall">
+  <button class="x" data-go="offer" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+  <div class="pw-top">
+    <span class="ihl wht"><svg aria-label="iHeart" role="img" fill="none" viewBox="0 0 106 25" xmlns="http://www.w3.org/2000/svg"><path class="iheart-text" clip-rule="evenodd" d="M35.8402 6.99053V22.0576H32.1369V6.99053H35.8402ZM33.9885 1.50003C35.1878 1.50003 36.1789 2.48919 36.1789 3.68593C36.1789 4.88269 35.1878 5.87173 33.9885 5.87173C32.7893 5.87173 31.7979 4.88269 31.7979 3.68593C31.7979 2.48919 32.7893 1.50003 33.9885 1.50003Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M49.3464 22.0576V13.9125H41.393V22.0576H37.6901V2.54082H41.393V10.6342H49.3464V2.54082H53.0497V22.0576H49.3464Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M66.7109 13.054C66.3456 11.2325 64.833 9.67134 62.5643 9.67134C60.3218 9.67134 58.7046 11.2325 58.3396 13.054H66.7109ZM70.4659 16.1509H58.2878C58.6792 17.8164 60.4002 19.2996 62.5125 19.2996C64.0768 19.2996 65.3027 18.4665 65.9022 17.5299H69.9188C68.8496 20.5743 65.8767 22.5 62.5125 22.5C58.0005 22.5 54.3239 19.0648 54.3239 14.511C54.3239 9.95697 58.0268 6.548 62.5643 6.548C67.0242 6.548 70.6749 10.0612 70.6749 14.511C70.6749 15.0838 70.5966 15.5779 70.4659 16.1509Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M80.0065 9.87892C77.4507 9.87892 75.3904 11.9869 75.3904 14.511C75.3904 17.0612 77.4507 19.1691 80.0065 19.1691C82.5876 19.1691 84.6219 17.0612 84.6219 14.511C84.6219 11.9869 82.5876 9.87892 80.0065 9.87892ZM84.6219 19.6378H84.5702C83.7351 21.043 82.0662 22.5 79.5368 22.5C75.1297 22.5 71.5308 19.0911 71.5308 14.511C71.5308 9.95697 75.1297 6.548 79.5368 6.548C81.9101 6.548 83.527 7.77108 84.5702 9.1763H84.6219V6.99052H88.3252V22.0576H84.6219V19.6378Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M90.0153 6.99054H93.7185V9.07207H93.7703C94.5536 7.74569 95.6745 6.54802 97.6045 6.54802H97.9695V10.2951H97.0564C95.2831 10.2951 93.8495 11.675 93.7185 13.4185V22.0576H90.0153V6.99054Z" fill-rule="evenodd"></path><path class="iheart-text" clip-rule="evenodd" d="M99.2443 9.95699V6.99054H100.6V3.58168H104.303V6.99054H106.885V9.95699H104.303V17.8681C104.303 18.3885 104.721 18.7792 105.19 18.7792H106.885V22.0576H105.19C102.478 22.0576 100.6 20.3404 100.6 17.6079V9.95699H99.2443Z" fill-rule="evenodd"></path><path class="heart" d="M25.8641 8.73934C25.8641 10.8613 24.7147 12.953 22.4487 14.9575C22.3487 15.0458 22.224 15.089 22.0999 15.089C21.9551 15.089 21.8105 15.0298 21.7064 14.9125C21.5139 14.6958 21.5335 14.3643 21.7515 14.1716C23.7826 12.3758 24.8126 10.548 24.8126 8.73934V8.71394C24.8126 7.24592 23.8897 5.5178 22.7114 4.78055C22.4653 4.62649 22.3912 4.30248 22.5457 4.05742C22.6998 3.81178 23.0245 3.73773 23.2707 3.89129C24.7486 4.81713 25.8641 6.89067 25.8641 8.71394V8.73934ZM19.0392 13.167C18.958 13.2124 18.8699 13.2339 18.7824 13.2339C18.5983 13.2339 18.4196 13.1371 18.3231 12.9656C18.1816 12.7127 18.2718 12.3928 18.5256 12.2515C19.7428 11.5711 20.5615 10.2491 20.5646 8.95867C20.562 7.77273 19.9066 6.69347 18.8529 6.14033C18.5957 6.0052 18.4969 5.68813 18.6322 5.43155C18.7676 5.17532 19.0856 5.07653 19.3425 5.21131C20.7407 5.94503 21.6103 7.3767 21.6166 8.95115V8.9671C21.6099 10.6226 20.5754 12.3085 19.0392 13.167ZM14.8169 11.6252C13.557 11.6246 12.5359 10.6052 12.5359 9.34784C12.5359 8.0905 13.557 7.07115 14.8169 7.07045C16.0768 7.07115 17.0978 8.0905 17.0978 9.34784C17.0978 10.6052 16.0768 11.6246 14.8169 11.6252ZM11.3106 12.9656C11.2141 13.1371 11.0354 13.2339 10.8514 13.2339C10.7638 13.2339 10.6759 13.2124 10.5946 13.167C9.0584 12.3085 8.02385 10.6226 8.01725 8.9671V8.95115C8.0235 7.3767 8.89317 5.94503 10.2912 5.21131C10.5481 5.07653 10.8661 5.17532 11.0015 5.43155C11.1368 5.68813 11.038 6.0052 10.7808 6.14033C9.72712 6.69347 9.07187 7.77273 9.06912 8.95867C9.07231 10.2491 9.89106 11.5711 11.1083 12.2515C11.362 12.3928 11.4522 12.7127 11.3106 12.9656ZM7.92737 14.9125C7.82337 15.0298 7.6786 15.089 7.53392 15.089C7.4097 15.089 7.28516 15.0458 7.18502 14.9575C4.91902 12.953 3.76973 10.8613 3.76973 8.73934V8.71394C3.76973 6.89067 4.88508 4.81713 6.3632 3.89129C6.60925 3.73773 6.93395 3.81178 7.0881 4.05742C7.24269 4.30248 7.16848 4.62649 6.92243 4.78055C5.74402 5.5178 4.82116 7.24592 4.82116 8.71394V8.73934C4.82116 10.548 5.85123 12.3758 7.88227 14.1716C8.10022 14.3643 8.11998 14.6958 7.92737 14.9125ZM21.1597 1.50009C18.5287 1.50009 16.1781 2.89108 14.8169 4.92227C13.4557 2.89108 11.1051 1.50009 8.47415 1.50009C4.28157 1.50009 0.88501 4.88969 0.88501 9.07295C0.88501 11.7271 2.56953 13.6405 4.32942 15.4112L11.2096 21.9023C11.5702 22.2424 12.1636 21.9874 12.1636 21.4923V16.4349C12.1636 14.9717 13.3511 13.7853 14.8169 13.7829C16.2828 13.7853 17.4703 14.9717 17.4703 16.4349V21.4923C17.4703 21.9874 18.0635 22.2424 18.4241 21.9023L25.3044 15.4112C27.0642 13.6405 28.7487 11.7271 28.7487 9.07295C28.7487 4.88969 25.3523 1.50009 21.1597 1.50009Z"></path></svg></span>
+    <h1 class="pw-h" data-t="y1">Play “The Life of a Showgirl” whenever you want.</h1>
+    <p class="pw-sub" data-t="y2">And every other song you hear, on demand.</p>
+  </div>
+  <div class="pw-b">
+    <button class="tier" data-pick="plan:aa">
+      <span class="rd"></span>
+      <span class="tier-m"><span class="tier-n"><b>iHeartRadio All Access</b><em data-t="y3">Everything</em></span>
+        <span class="tier-l" data-t="y4">Any song, album or playlist on demand</span>
+        <span class="tier-l" data-t="y5">Unlimited playlists, offline listening</span>
+        <span class="tier-l" data-t="y6">Everything in Plus</span></span>
+      <span class="tier-p"><b data-t="y7">$12.99</b><small data-t="y8">/month</small></span>
+    </button>
+    <button class="tier" data-pick="plan:plus">
+      <span class="rd"></span>
+      <span class="tier-m"><span class="tier-n"><b>iHeartRadio Plus</b></span>
+        <span class="tier-l" data-t="y9">Replay songs from the radio</span>
+        <span class="tier-l" data-t="y10">Unlimited skips, ad-free music</span></span>
+      <span class="tier-p"><b data-t="y11">$6.99</b><small data-t="y8">/month</small></span>
+    </button>
+    <p class="pw-diff" data-t="y12">All Access is <b>$6 more a month</b> for any song on demand and offline listening.</p>
+    <div class="pw-proof"><span class="stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3L2.8 9.5l6.4-.9z"/></svg></span><span data-t="y13">4.8 · 647K ratings on the App Store</span></div>
+    <button class="cta"><span data-show="plan:aa"><span data-t="y14">Continue with All Access</span></span><span data-show="plan:plus"><span data-t="y15">Continue with Plus</span></span></button>
+    <p class="pw-legal" data-t="y16">Renews monthly. Cancel anytime in Settings.</p>
+    <div class="legal"><span data-t="y17">Terms</span><span data-t="y18">Privacy</span><span data-t="y19">Restore</span></div>
+  </div>
+</section>
+
+<section class="scr sheet rs of" data-id="offer">
+  <div class="rs-dim"></div>
+  <div class="rs-card">
+    <div class="rs-grab"></div>
+    <p class="of-k" data-t="o1">Before you go</p>
+    <h2 class="rs-h" data-t="o2">Just want the radio, without the limits?</h2>
+    <div class="of-plan">
+      <div class="of-top"><b>iHeartRadio Plus</b><span class="of-pr"><b data-t="o3">$6.99</b><small data-t="o4">/month</small></span></div>
+      <p class="of-li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-t="o5">Replay any song you hear on the radio</span></p>
+      <p class="of-li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-t="o6">Unlimited skips</span></p>
+      <p class="of-li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-t="o7">Ad-free music</span></p>
+      <span class="of-save" data-t="o8">$6 a month less than All Access</span>
+    </div>
+    <button class="cta"><span data-t="o9">Get Plus for $6.99/month</span></button>
+    <button class="lnk" data-go="nowplaying"><span data-t="o10">No thanks, keep listening free</span></button>
+  </div>
+</section>
+
+<!-- SCREENS:END -->
+
+      </div></div>
+      <div class="au-pn" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="au-hint">Tap Replay on the player to open the upgrade, then close the paywall with ✕ to see idea 4.</p>
+    <!-- shown when CONTENT.liveUrl is set: assets/qr-app.png = qr.swift "<liveUrl>?app" -->
+    <div class="au-qr" id="qrCard" hidden><img src="assets/qr-app.png" alt="QR code that opens the prototype full screen"><div><b>Try it on your phone</b><p>Scan to open the prototype full screen, the way a new user would see it.</p></div></div>
+    <div class="au-mobw" id="qrMob" hidden><a class="au-btn" href="?app">Open it full screen</a></div>
+  </div>
+</section>
+
+<!-- the paywall TODAY vs PROPOSED — built from CONTENT.compare (stills: assets/hero/<today>.png, <proposed>.png) -->
+<section class="au-sec" id="compare" hidden><div class="au-wrap" id="cmpBody"></div></section>
+
+<footer class="au-foot" id="sources">
+  <div class="au-wrap">
+    <details id="srcDetails">
+      <summary>Where the numbers come from</summary>
+      <div class="au-srcs" id="srcBody"></div>
+    </details>
+    <p class="au-fine" id="fine"></p>
+    <div class="au-cta-line">
+      <p>Every screen here can be built and A/B tested in Adapty’s Flow Builder, with no app release.</p>
+      <a class="au-btn" href="https://adapty.io/flow-paywall-builder/" target="_blank" rel="noopener">About Flow Builder</a>
+    </div>
+  </div>
+</footer>
+
+<!-- extras: video dialog (CONTENT.video), ?app bar, ?tour overlay (CONTENT.tour) -->
+<dialog class="au-vid" id="vid" aria-label="Walkthrough video">
+  <div class="au-vid-in"><video id="vidEl" controls muted playsinline preload="none"></video></div>
+  <div class="au-vid-bar"><a id="vidDl" download>Download the MP4</a><button type="button" class="au-vid-x" id="vidX">Close</button></div>
+</dialog>
+<div class="au-scrim" id="abScrim"></div>
+<div class="au-appbar" id="appbar">
+  <button type="button" class="au-ab-why" id="abWhy"><i></i><span id="abT"></span><em>Why ↑</em></button>
+  <div class="au-lsw" id="abLang" role="group" aria-label="Language"></div>
+</div>
+<div class="au-tour" aria-hidden="true">
+  <div class="au-tb"><img src="assets/brand/appstore-icon.jpg" alt="">Growth Audit <small>· iHeart</small></div>
+  <div class="au-tby">Prepared by Adapty</div>
+  <div class="au-tcap" id="tCap"></div>
+  <div class="au-ttap" id="tTap"></div>
+  <div class="au-tprog"><i id="tProg"></i></div>
+  <div class="au-tintro" id="tIntro"></div>
+  <div class="au-tend" id="tEnd"></div>
+</div>
+
+<!-- CONTENT — all the audit's words and numbers, as data. Schema (brand-check enforces it):
+     ideas  : 3–5 rows, ranked (the audit is five ideas, never fifteen). screen = the screen that shows it.
+     panel  : one entry per screen. idea = its number in ideas (1-based) or 0 for a context screen.
+              why on an idea screen reads "<b>Try</b> X, <b>because</b> Y." in ≤ 45 words; iv = its range.
+              why on a context screen is one line saying what it sets up.
+     hero   : three screen ids shown as stills in the hero — run hero-stills.sh after the screens are done.
+     outcome: combined "up to" numbers, PS-deck style, never above the ceiling of the per-idea ranges.
+     sources: public facts only — App Store, their site, their screens. No sales research on this page.
+     EXTRAS (each one hides itself when left empty):
+     langs  : [{"code":"en","name":"English"},{"code":"es","name":"Español · Spain prices"}] — first = the markup's language
+     i18n   : {"es": {"<data-t key>": "text with {tokens}"}} — every data-t key, for every language after the first
+     prices : {"es": {"yr": "39,99 €", …}} — {tokens} in i18n strings; that storefront's real IAP prices
+     labelsI18n: {"es": {"goal": {"a": "…"}}} — C.labels per language (data-bind="label:…")
+     liveUrl: final Pages URL (QR card + video end card); the QR file encodes liveUrl + "?app"
+     video / poster: "assets/walkthrough.mp4" / "assets/walkthrough-poster.jpg" (record-video.sh)
+     compare: {today, proposed, kicker, title, sub, todayCap, rows:[{h, idea, was, now}], kept} — today = a data-aside screen
+     tour   : {segments:[{id, d, st, tap:[selector-in-screen, ms], pop, reveal, end}], captions:{id:{n|k, t, l, o, ol}},
+              introLede, endTitle} — ~30 s total; the last segment has end:true (the end card) -->
+<script type="application/json" id="content">
+{
+ "app": "iHeart",
+ "state": {
+  "st": [
+   "z100",
+   "kiis",
+   "iheart80s"
+  ],
+  "plan": "aa"
+ },
+ "labels": {},
+ "chips": {
+  "welcome": "Welcome",
+  "stations": "Stations",
+  "presets": "Presets",
+  "nowplaying": "Now playing",
+  "replay": "Replay",
+  "paywall": "Paywall",
+  "offer": "On close"
+ },
+ "hero": [
+  "presets",
+  "paywall",
+  "replay"
+ ],
+ "outcome": {
+  "cr": "+25%",
+  "arpu": "+15%"
+ },
+ "ideas": [
+  {
+   "screen": "nowplaying",
+   "title": "Ask when radio can’t do it",
+   "what": "Someone hears a song they love on Z100 and it’s already half over. That’s the one thing live radio can’t do for them, and the one feature both of your plans sell: replay any song from the radio. Put the upgrade on that tap.",
+   "impact": "+10–25%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "presets",
+   "title": "Turn the first question into their presets",
+   "what": "Presets are your own hook (“save and access your favorite stations”). Ask for a few stations during onboarding, and a new listener lands on a home screen that’s already theirs, live in one tap, before any upgrade ask.",
+   "impact": "+10–20%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "paywall",
+   "title": "Make All Access the obvious pick",
+   "what": "Plus is $6.99 and All Access $12.99 a month. Show both side by side with All Access preselected, say what the extra $6 buys (any song on demand, unlimited playlists, offline), and name the song they just tried to replay in the headline.",
+   "impact": "+5–15%",
+   "il": "ARPU"
+  },
+  {
+   "screen": "offer",
+   "title": "Catch the people who close the paywall",
+   "what": "Closing an All Access paywall usually means staying free. Offer iHeartRadio Plus at $6.99 instead: replay, unlimited skips and ad-free music, the features they just reached for, for $6 a month less.",
+   "impact": "+5–12%",
+   "il": "CR to purchase"
+  },
+  {
+   "screen": "replay",
+   "title": "Put the 4.8 stars where the decision happens",
+   "what": "4.8 stars from 647K ratings is proof most apps would love to have, and today it lives on your App Store page. Show it on the upgrade sheet, the moment someone weighs paying.",
+   "impact": "+3–8%",
+   "il": "CR to purchase"
+  }
+ ],
+ "panel": {
+  "welcome": {
+   "idea": 0,
+   "t": "Your first screen, kept",
+   "why": "Your own words from the App Store art: Your Music, Your Stations, Your Podcasts. All free. Nothing to change here."
+  },
+  "stations": {
+   "idea": 0,
+   "t": "One question with a use",
+   "why": "New listeners pick the stations they already love. The answer sets up idea 2 and the song in idea 1."
+  },
+  "presets": {
+   "idea": 2,
+   "t": "Turn the first question into their presets",
+   "why": "<b>Try</b> saving the stations they just picked as presets and starting playback in one tap, <b>because</b> a listener whose home screen is already theirs comes back, and returning listeners are the ones who upgrade.",
+   "iv": "CR +10–20%",
+   "il": "to purchase",
+   "also": ""
+  },
+  "nowplaying": {
+   "idea": 1,
+   "t": "Ask when radio can’t do it",
+   "why": "<b>Try</b> opening the upgrade when someone taps Replay on a song that’s already playing, <b>because</b> that’s the one thing live radio can’t do, and the one feature both of your plans sell.",
+   "iv": "CR +10–25%",
+   "il": "to purchase",
+   "also": ""
+  },
+  "replay": {
+   "idea": 5,
+   "t": "Put the 4.8 stars where the decision happens",
+   "why": "<b>Try</b> showing 4.8 stars from 647K ratings on the upgrade sheet, <b>because</b> proof works where someone is deciding to pay, not on a store page they left days ago.",
+   "iv": "CR +3–8%",
+   "il": "to purchase",
+   "also": "Also idea 1: the sheet names the song they wanted back, and the station it played on."
+  },
+  "paywall": {
+   "idea": 3,
+   "t": "Make All Access the obvious pick",
+   "why": "<b>Try</b> both plans side by side with All Access preselected and the $6 difference spelled out, <b>because</b> people choose the bigger plan when they can see exactly what the extra buys.",
+   "iv": "ARPU +5–15%",
+   "il": "per paying listener",
+   "also": "Also idea 1: the headline names the song they just tried to replay."
+  },
+  "offer": {
+   "idea": 4,
+   "t": "Catch the people who close the paywall",
+   "why": "<b>Try</b> offering Plus at $6.99 to people who close the All Access paywall, <b>because</b> it still includes replay, the feature they just reached for, and today closing means staying free.",
+   "iv": "CR +5–12%",
+   "il": "to purchase",
+   "also": ""
+  }
+ },
+ "langs": [
+  {
+   "code": "en",
+   "name": "English"
+  },
+  {
+   "code": "es",
+   "name": "Español · Mexico prices"
+  }
+ ],
+ "i18n": {
+  "es": {
+   "w1": "Tu música",
+   "w2": "Tus estaciones",
+   "w3": "Tus podcasts",
+   "w4": "TODO GRATIS",
+   "w5": "Comenzar",
+   "w6": "Iniciar sesión",
+   "s1": "Elige estaciones para tus favoritos",
+   "s2": "Elige algunas. Estarán a un toque cada vez que abras iHeart.",
+   "s3": "Guardar mis favoritos",
+   "g1": "Pop · Nueva York",
+   "g2": "Pop · Los Ángeles",
+   "g3": "Hip Hop · Los Ángeles",
+   "g4": "Country · Nashville",
+   "g5": "Éxitos de los 80",
+   "g6": "Noticias · Lo último",
+   "p1": "estaciones guardadas en tus favoritos",
+   "p2": "Favoritos",
+   "p3": "Dial de radio en vivo",
+   "p4": "Buscar estaciones",
+   "p5": "Tu biblioteca",
+   "p6": "Estaciones",
+   "p7": "Podcasts",
+   "p8": "Playlists",
+   "p9": "Escuchar",
+   "t1": "Inicio",
+   "t2": "Buscar",
+   "t3": "Radio",
+   "t4": "Podcasts",
+   "t5": "Playlists",
+   "n1": "Biblioteca",
+   "n2": "Favorito",
+   "n3": "Sonando",
+   "n4": "Estación",
+   "n5": "Concursos",
+   "n6": "EN VIVO EN",
+   "n7": "Repetir",
+   "n8": "Letra",
+   "n9": "¿Te perdiste el inicio? Escúchala otra vez.",
+   "r1": "Acaba de sonar en",
+   "r2": "Escúchala otra vez desde el inicio",
+   "r3": "Repite cualquier canción que escuches en la radio, salta sin límites y escucha sin anuncios con iHeartRadio Plus o All Access.",
+   "r4": "{rating} · {count} calificaciones",
+   "r5": "en el App Store",
+   "r6": "Ver planes",
+   "r7": "Ahora no",
+   "y1": "Escucha “The Life of a Showgirl” cuando quieras.",
+   "y2": "Y cualquier otra canción que escuches, a tu ritmo.",
+   "y3": "Todo",
+   "y4": "Cualquier canción, álbum o playlist",
+   "y5": "Playlists ilimitadas, sin conexión",
+   "y6": "Todo lo de Plus",
+   "y7": "{aa}",
+   "y8": "/mes",
+   "y9": "Repite canciones de la radio",
+   "y10": "Saltos ilimitados, música sin anuncios",
+   "y11": "{plus}",
+   "y12": "All Access cuesta <b>{diff} más al mes</b> por cualquier canción cuando quieras y escucha sin conexión.",
+   "y13": "{rating} · {count} calificaciones en el App Store",
+   "y14": "Continuar con All Access",
+   "y15": "Continuar con Plus",
+   "y16": "Se renueva cada mes. Cancela cuando quieras en Ajustes.",
+   "y17": "Términos",
+   "y18": "Privacidad",
+   "y19": "Restaurar",
+   "o1": "Antes de irte",
+   "o2": "¿Solo quieres la radio, sin límites?",
+   "o3": "{plus}",
+   "o4": "/mes",
+   "o5": "Repite cualquier canción de la radio",
+   "o6": "Saltos ilimitados",
+   "o7": "Música sin anuncios",
+   "o8": "{diff} menos al mes que All Access",
+   "o9": "Obtener Plus por {plus}/mes",
+   "o10": "No, gracias, sigo gratis",
+   "p10": "Tendencias en iHeart"
+  }
+ },
+ "prices": {
+  "es": {
+   "aa": "$249.00",
+   "plus": "$149.00",
+   "diff": "$100",
+   "rating": "4.9",
+   "count": "25 mil"
+  }
+ },
+ "labelsI18n": {},
+ "liveUrl": "https://eddieatadapty.github.io/iheart-flow-rebuild/",
+ "video": "assets/walkthrough.mp4",
+ "poster": "assets/walkthrough-poster.jpg",
+ "compare": null,
+ "tour": {
+  "segments": [
+   {
+    "id": "welcome",
+    "d": 3400,
+    "tap": [
+     ".wl-cta",
+     2900
+    ]
+   },
+   {
+    "id": "stations",
+    "d": 1800,
+    "st": {
+     "st": []
+    },
+    "tap": [
+     "[data-toggle=\"st:z100\"]",
+     1500
+    ]
+   },
+   {
+    "id": "stations",
+    "d": 1100,
+    "st": {
+     "st": [
+      "z100"
+     ]
+    },
+    "tap": [
+     "[data-toggle=\"st:kiis\"]",
+     800
+    ]
+   },
+   {
+    "id": "stations",
+    "d": 1100,
+    "st": {
+     "st": [
+      "z100",
+      "kiis"
+     ]
+    },
+    "tap": [
+     "[data-toggle=\"st:iheart80s\"]",
+     800
+    ]
+   },
+   {
+    "id": "stations",
+    "d": 1300,
+    "st": {
+     "st": [
+      "z100",
+      "kiis",
+      "iheart80s"
+     ]
+    },
+    "tap": [
+     ".cta",
+     1000
+    ]
+   },
+   {
+    "id": "presets",
+    "d": 3200,
+    "pop": ".toast",
+    "tap": [
+     ".hm-cta",
+     2700
+    ]
+   },
+   {
+    "id": "nowplaying",
+    "d": 3000,
+    "tap": [
+     ".np-rp",
+     2500
+    ]
+   },
+   {
+    "id": "replay",
+    "d": 3200,
+    "reveal": ".rs-proof",
+    "tap": [
+     ".cta",
+     2700
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 2400,
+    "st": {
+     "plan": "aa"
+    },
+    "tap": [
+     "[data-pick=\"plan:plus\"]",
+     2000
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 1500,
+    "st": {
+     "plan": "plus"
+    },
+    "tap": [
+     "[data-pick=\"plan:aa\"]",
+     1100
+    ]
+   },
+   {
+    "id": "paywall",
+    "d": 1500,
+    "st": {
+     "plan": "aa"
+    },
+    "tap": [
+     ".x",
+     1100
+    ]
+   },
+   {
+    "id": "offer",
+    "d": 3200,
+    "reveal": ".of-save"
+   },
+   {
+    "id": "offer",
+    "d": 3500,
+    "end": true
+   }
+  ],
+  "captions": {
+   "welcome": {
+    "k": "Context",
+    "t": "Your first screen, kept",
+    "l": "Your music, your stations, your podcasts. All free."
+   },
+   "stations": {
+    "k": "Context",
+    "t": "One question with a use",
+    "l": "New listeners pick the stations they already love."
+   },
+   "presets": {
+    "n": 2,
+    "t": "Their presets, ready",
+    "l": "The answers become their home screen, live in one tap.",
+    "o": "+10–20%",
+    "ol": "CR to purchase"
+   },
+   "nowplaying": {
+    "n": 1,
+    "t": "Ask when radio can’t",
+    "l": "The song is half over. Replay is what they want.",
+    "o": "+10–25%",
+    "ol": "CR to purchase"
+   },
+   "replay": {
+    "n": 5,
+    "t": "4.8 stars, at the decision",
+    "l": "647K ratings, shown where someone weighs paying.",
+    "o": "+3–8%",
+    "ol": "CR to purchase"
+   },
+   "paywall": {
+    "n": 3,
+    "t": "All Access, the obvious pick",
+    "l": "Both plans side by side. The extra $6 spelled out.",
+    "o": "+5–15%",
+    "ol": "ARPU"
+   },
+   "offer": {
+    "n": 4,
+    "t": "Catch the people who close",
+    "l": "Plus at $6.99 keeps replay, for $6 less.",
+    "o": "+5–12%",
+    "ol": "CR to purchase"
+   }
+  },
+  "introLede": "Five ideas to turn more listeners into subscribers, built into iHeart’s own screens.",
+  "endTitle": "Five ideas, built into iHeart’s own screens."
+ },
+ "grounding": "Impact ranges are Adapty’s expected effect from teardowns and A/B tests across 30,000+ subscription apps, not measured lift for iHeart. They overlap, so they don’t add up.",
+ "sources": [
+  {
+   "group": "Prices",
+   "items": [
+    {
+     "dt": "$6.99 · iHeartRadio Plus",
+     "dd": "In-App Purchases on your <a href=\"https://apps.apple.com/us/app/iheart-radio-music-podcasts/id290638154\" target=\"_blank\" rel=\"noopener\">US App Store listing</a>. Shown as monthly; the listing doesn’t state the period."
+    },
+    {
+     "dt": "$12.99 · iHeartRadio All Access",
+     "dd": "Same listing. The $6 difference on the paywall and offer is $12.99 − $6.99."
+    },
+    {
+     "dt": "$149.00 · $249.00 (Spanish version)",
+     "dd": "Plus and All Access on your <a href=\"https://apps.apple.com/mx/app/iheart-play-listen-stream/id290638154\" target=\"_blank\" rel=\"noopener\">Mexico App Store listing</a>; difference $100."
+    },
+    {
+     "dt": "Not used: $259.00 All Access (Mexico)",
+     "dd": "A second All Access price on the Mexico listing, likely legacy. We used the lower, more common $249.00."
+    }
+   ]
+  },
+  {
+   "group": "Proof",
+   "items": [
+    {
+     "dt": "4.8 ★ · 647K ratings",
+     "dd": "US App Store: 4.76 from 646,733 ratings, rounded the way the store shows it."
+    },
+    {
+     "dt": "4.9 ★ · 25 mil calificaciones",
+     "dd": "Mexico App Store: 4.88 from 25,292 ratings, used in the Spanish version."
+    }
+   ]
+  },
+  {
+   "group": "Features and copy",
+   "items": [
+    {
+     "dt": "“Your Music · Your Stations · Your Podcasts · ALL FREE”",
+     "dd": "Your App Store screenshot 2. Used as the welcome screen; your live welcome may differ."
+    },
+    {
+     "dt": "Replay, unlimited skips, songs on demand, playlists, offline",
+     "dd": "“Premium features” in your App Store description."
+    },
+    {
+     "dt": "Which plan includes what",
+     "dd": "Plus: ad-free music, unlimited skips, replay songs from the radio. All Access: adds songs on demand, unlimited playlists and offline. As iHeart describes its plans publicly; the listing doesn’t split them, so please confirm."
+    },
+    {
+     "dt": "Stations, song and player",
+     "dd": "Z100, 102.7 KIIS FM, Real 92.3, 97.9 The Big 98, iHeart80s, 24/7 News, Live Radio Dial, Presets and “The Life of a Showgirl” are all from your App Store screenshots 1, 3, 4 and 6."
+    },
+    {
+     "dt": "Spanish copy",
+     "dd": "Our translation, not yours. Station names and the song are kept in the original."
+    }
+   ]
+  },
+  {
+   "group": "Design",
+   "items": [
+    {
+     "dt": "Colours, logo, type",
+     "dd": "Red #C6002B and the wordmark from <a href=\"https://news.iheart.com/\" target=\"_blank\" rel=\"noopener\">news.iheart.com</a> (iheart.com blocks automated visits). Background, marketing red and the location-pill blue sampled off your App Store screenshots. Type is the iOS system font, as in your app."
+    },
+    {
+     "dt": "Station logos and cover art",
+     "dd": "Cut from your App Store screenshots 4 and 1; the cover was straightened from the tilted phone in screenshot 1."
+    },
+    {
+     "dt": "Welcome and paywall red band",
+     "dd": "The bright red with the darker curve from your App Store art."
+    }
+   ]
+  },
+  {
+   "group": "What we couldn’t see",
+   "items": [
+    {
+     "dt": "Your live onboarding and paywall",
+     "dd": "We worked from your App Store listing and site, with no recording, so we haven’t rebuilt today’s paywall for a side-by-side."
+    },
+    {
+     "dt": "Free trial",
+     "dd": "We don’t know whether a trial runs on Plus or All Access, so the paywall makes no trial claim."
+    },
+    {
+     "dt": "Your test history",
+     "dd": "If you’ve already tested any of these, tell us and we’ll go deeper on the rest."
+    }
+   ]
+  }
+ ]
+}
+</script>
+
+<script>
+/* iHeart hooks: presets row + "lead" station built from the station picker. Asset paths listed literally for publish-gh. */
+var STN = {
+  z100:      {n: 'Z100',            img: 'assets/crop/st-z100.png'},
+  kiis:      {n: '102.7 KIIS FM',   img: 'assets/crop/st-kiis.png'},
+  real923:   {n: 'Real 92.3',       img: 'assets/crop/st-real923.png'},
+  big98:     {n: '97.9 The Big 98', img: 'assets/crop/st-big98.png'},
+  iheart80s: {n: 'iHeart80s Radio', img: 'assets/crop/st-iheart80s.png'},
+  news247:   {n: '24/7 News',       img: 'assets/crop/st-news247.png'}
+};
+var PLUS_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+window.onSync = function(S){
+  var picks = (S.st || []).filter(function(k){ return STN[k]; });
+  var music = picks.filter(function(k){ return k !== 'news247'; });
+  var lead = STN[music[0] || 'z100'].n;
+  document.querySelectorAll('.lead-name').forEach(function(e){ e.textContent = lead; });
+  var row = document.getElementById('prRow');
+  if (row) {
+    var h = picks.map(function(k){ return '<span class="pr-t"><img src="' + STN[k].img + '" alt="' + STN[k].n + '"></span>'; }).join('');
+    for (var i = picks.length; i < 5; i++) h += '<span class="pr-t add">' + PLUS_SVG + '</span>';
+    row.innerHTML = h;
+  }
+};
+window.onEnter = function(id, S){
+  var bar = document.querySelector('.sbar'); if (bar) bar.style.color = id === 'welcome' || id === 'paywall' ? '#fff' : '';
+  if (id === 'stations' && !SHOT) { S.st = []; sync(); }                 /* the question starts fresh every time */
+  if (id === 'presets' && !(S.st || []).length) { S.st = ['z100', 'kiis', 'iheart80s']; sync(); }
+};
+
+</script>
+<script>
+/* ============ engine — generic, do not fork per app ============ */
+var C = JSON.parse(document.getElementById('content').textContent);
+var S = C.state, scr = {}, ORDER = [], hist = [], cur = null, Q = location.search;
+var SHOT = /[?&](shot|phone|tour)\b/.test(Q), HERO = /[?&]hero\b/.test(Q);
+/* a screen with data-aside (e.g. the paywall TODAY for the side-by-side) renders for stills but is not part of the flow */
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id] = s; if (!s.hasAttribute('data-aside')) ORDER.push(s.dataset.id); });
+if (/[?&]shot\b/.test(Q)) document.documentElement.classList.add('shot');
+if (/[?&]phone\b/.test(Q)) document.documentElement.classList.add('shot', 'phoneonly');
+if (/[?&]clear\b/.test(Q)) document.documentElement.classList.add('clear');
+var IDEAS = (C.ideas || []).length;
+
+/* ---- languages: markup is the first language; C.i18n[lang][data-t key] the others; {tokens} from C.prices[lang] ---- */
+var LANGS = C.langs || [], BASE = LANGS.length ? LANGS[0].code : 'en', LANG_DONE = BASE, BASE_LABELS = JSON.parse(JSON.stringify(C.labels || {}));
+if (!S.lang) S.lang = BASE;
+function fillP(s, l){ var P = (C.prices || {})[l] || {}; return String(s).replace(/\{(\w+)\}/g, function(m, k){ return k in P ? P[k] : m; }); }
+function applyLang(){
+  var l = S.lang || BASE; if (l === LANG_DONE) return;
+  var T = (C.i18n || {})[l] || {};
+  document.querySelectorAll('.phone [data-t]').forEach(function(el){
+    if (el._base == null) el._base = el.innerHTML;
+    el.innerHTML = l === BASE || T[el.dataset.t] == null ? el._base : fillP(T[el.dataset.t], l);
+  });
+  C.labels = JSON.parse(JSON.stringify(BASE_LABELS));
+  var LL = (C.labelsI18n || {})[l] || {}; Object.keys(LL).forEach(function(k){ C.labels[k] = LL[k]; });
+  LANG_DONE = l;
+}
+function setLang(l){
+  if (!LANGS.some(function(x){ return x.code === l; })) return;
+  S.lang = l; sync();
+  document.querySelectorAll('[data-setlang]').forEach(function(b){ b.classList.toggle('on', b.dataset.setlang === l); });
+  if (window.onLang) window.onLang(l);
+}
+
+function lab(key){ var v = S[key]; var L = C.labels[key]; if (Array.isArray(v)) return v.map(function(x){ return L && L[x] || x; }).join(', '); return (L && L[v]) || v; }
+function sync(){
+  applyLang();
+  document.querySelectorAll('[data-bind]').forEach(function(el){
+    var b = el.dataset.bind, m = b.split(':');
+    el.textContent = m[0] === 'label' ? lab(m[1]) : m[0] === 'count' ? (S[m[1]] || []).length : (S[b] == null ? '' : S[b]);
+  });
+  document.querySelectorAll('[data-pick]').forEach(function(el){ var p = el.dataset.pick.split(':'); el.classList.toggle('on', S[p[0]] === p[1]); });
+  document.querySelectorAll('[data-toggle]').forEach(function(el){ var p = el.dataset.toggle.split(':'); el.classList.toggle('on', (S[p[0]] || []).indexOf(p[1]) > -1); });
+  document.querySelectorAll('[data-requires]').forEach(function(el){ el.disabled = !(S[el.dataset.requires] || []).length; });
+  document.querySelectorAll('[data-show]').forEach(function(el){ var p = el.dataset.show.split(':'); el.style.display = String(S[p[0]]) === p[1] ? '' : 'none'; });
+  if (window.onSync) window.onSync(S);
+}
+function show(id, dir){
+  var from = scr[cur], to = scr[id]; if (!to || id === cur) return;
+  var sheet = to.classList.contains('sheet');
+  if (from){
+    from.classList.remove('is-active');
+    if (sheet) from.classList.add('under');                                   /* a sheet slides up over the screen that opened it */
+    else if (dir === 'fwd' && !from.classList.contains('sheet')) from.classList.add('is-past');
+  }
+  if (!sheet) Object.keys(scr).forEach(function(k){ var u = scr[k]; if (u !== to && u.classList.contains('under')) { u.classList.remove('under'); if (dir === 'fwd') u.classList.add('is-past'); } });
+  to.classList.remove('is-past', 'under'); to.classList.add('is-active'); cur = id;
+  paint(); if (window.onEnter) window.onEnter(id, S);
+}
+function go(id){ if (cur) hist.push(cur); show(id, 'fwd'); }
+function back(){ if (hist.length) { var p = hist.pop(); scr[cur].classList.remove('is-active'); show(p, 'back'); } }
+function jump(id){
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active', 'is-past', 'under'); });
+  var i = ORDER.indexOf(id); hist = ORDER.slice(0, i < 0 ? 0 : i); cur = null;
+  ORDER.slice(0, i).forEach(function(k){ if (!scr[k].classList.contains('sheet')) scr[k].classList.add('is-past'); });
+  if (scr[id] && scr[id].classList.contains('sheet')) {                        /* jumping to a sheet: its opener stays visible under it */
+    for (var j = i - 1; j >= 0; j--) if (!scr[ORDER[j]].classList.contains('sheet')) { scr[ORDER[j]].classList.remove('is-past'); scr[ORDER[j]].classList.add('under'); break; }
+  }
+  show(id, 'jump');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+}
+function stepBy(d){ var i = ORDER.indexOf(cur) + d; if (i >= 0 && i < ORDER.length) jump(ORDER[i]); }
+function jumpTo(id){
+  var p = document.getElementById('prototype');
+  if (p && !document.documentElement.classList.contains('appmode')) p.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+  jump(id);
+}
+function paint(){
+  sync();
+  var c = document.getElementById('chips');
+  if (!c.childElementCount) ORDER.forEach(function(id){
+    var p = C.panel[id] || {}, b = document.createElement('button');
+    b.className = 'au-chip'; b.type = 'button'; b.dataset.id = id; b.setAttribute('role', 'tab');
+    b.innerHTML = (p.idea ? '<i>' + p.idea + '</i>' : '') + ((C.chips && C.chips[id]) || id);
+    b.onclick = function(){ jump(id); };
+    c.appendChild(b);
+  });
+  c.querySelectorAll('.au-chip').forEach(function(b){ var on = b.dataset.id === cur; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  var d = C.panel[cur] || {t: cur, why: ''}, n = ORDER.indexOf(cur) + 1;
+  document.getElementById('panel').innerHTML =
+    (d.idea ? '<div class="au-pn-k"><i></i>Idea ' + d.idea + ' of ' + IDEAS + '</div>' : '<div class="au-pn-k au-ctx"><i></i>Context</div>') +
+    '<h3 class="au-pn-t">' + d.t + '</h3><p class="au-pn-h">' + d.why + '</p>' +
+    (d.iv ? '<div class="au-pn-o"><div class="au-lab">Potential outcome · based on Adapty data</div><div class="au-val"><mark>' + d.iv + '</mark></div><div class="au-sub">' + (d.il || '') + '</div></div>' : '') +
+    (d.also ? '<p class="au-pn-a">' + d.also + '</p>' : '') +
+    '<div class="au-pn-nav"><button type="button" onclick="stepBy(-1)"' + (n <= 1 ? ' disabled' : '') + '>‹ Previous</button><span>Screen ' + n + ' of ' + ORDER.length + '</span><button type="button" onclick="stepBy(1)"' + (n === ORDER.length ? ' disabled' : '') + '>Next ›</button></div>';
+  var ab = document.getElementById('abT'); if (ab) ab.textContent = (d.idea ? 'Idea ' + d.idea + ' of ' + IDEAS + ' · ' : '') + (d.t || '');
+}
+document.addEventListener('click', function(e){
+  var j = e.target.closest('[data-jumpto]'); if (j){ e.preventDefault(); jumpTo(j.dataset.jumpto); return; }
+  var L = e.target.closest('[data-setlang]'); if (L){ setLang(L.dataset.setlang); return; }
+  if (e.target.closest('[data-langtoggle]') && LANGS.length > 1){ var k = LANGS.findIndex(function(x){ return x.code === S.lang; }); setLang(LANGS[(k + 1) % LANGS.length].code); return; }
+  var el = e.target.closest('[data-go],[data-back],[data-pick],[data-toggle]'); if (!el) return;
+  if (el.dataset.pick){ var p = el.dataset.pick.split(':'); S[p[0]] = p[1]; sync(); if (el.dataset.advance) setTimeout(function(){ go(el.dataset.advance); }, 170); return; }
+  if (el.dataset.toggle){ var q = el.dataset.toggle.split(':'), a = S[q[0]] = S[q[0]] || [], i = a.indexOf(q[1]); if (i > -1) a.splice(i, 1); else a.push(q[1]); sync(); return; }
+  if ('back' in el.dataset) return back();
+  go(el.dataset.go);
+});
+document.querySelectorAll('[data-input]').forEach(function(inp){
+  inp.value = S[inp.dataset.input] || ''; inp.addEventListener('input', function(){ S[inp.dataset.input] = inp.value.trim() || 'there'; sync(); });
+});
+function $(id){ return document.getElementById(id); }
+
+/* hero stills, shortlist, outcome, sources — from CONTENT */
+$('heroPhones').innerHTML = (C.hero || []).map(function(id, i){
+  var pos = ['l', 'c', 'r'][i] || 'r', t = (C.chips && C.chips[id]) || id;
+  return '<button class="au-hp au-' + pos + '" data-jumpto="' + id + '" aria-label="Open ' + t + '"><img src="assets/hero/' + id + '.png" alt=""></button>';
+}).join('');
+$('ideaList').innerHTML = (C.ideas || []).map(function(r, i){
+  return '<article class="au-idea"><div class="au-num">0' + (i + 1) + '</div><div><h3>' + r.title + '</h3><p>' + r.what + '</p>' +
+    '<button type="button" class="au-lnk" data-jumpto="' + r.screen + '">See it on the screen</button></div>' +
+    '<div class="au-imp"><div class="au-v"><mark>' + r.impact + '</mark></div><div class="au-l">' + r.il + '</div></div></article>';
+}).join('');
+var O = C.outcome || {};
+$('bandNums').innerHTML =
+  (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') +
+  (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '');
+$('bandFn').textContent = C.grounding;
+$('fine').textContent = C.grounding + ' Prepared by Adapty.';
+$('srcBody').innerHTML = C.sources.map(function(g){
+  return '<div><h4>' + g.group + '</h4><dl>' + g.items.map(function(it){ return '<dt>' + it.dt + '</dt><dd>' + it.dd + '</dd>'; }).join('') + '</dl></div>';
+}).join('');
+function openSrc(){ var d = $('srcDetails'); d.open = true; d.scrollIntoView({block: 'start'}); }
+
+/* ---- extras: language control, the paywall side by side, QR / phone view, the video ---- */
+if (LANGS.length > 1) {
+  $('langRow').hidden = false;
+  var lb = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.name + '</button>'; }).join('');
+  $('langSw').innerHTML = lb;
+  $('abLang').innerHTML = LANGS.map(function(x){ return '<button type="button" data-setlang="' + x.code + '">' + x.code.toUpperCase() + '</button>'; }).join('');
+}
+var CM = C.compare;
+if (CM && scr[CM.today] && scr[CM.proposed]) {
+  $('compare').hidden = false; $('navCompare').hidden = false;
+  $('cmpBody').innerHTML = '<div class="au-ideas-h"><p class="au-kicker">' + (CM.kicker || 'The paywall, side by side') + '</p><h2 class="au-h2">' + (CM.title || 'Today and proposed.') + (CM.sub ? ' <span>' + CM.sub + '</span>' : '') + '</h2></div>' +
+    '<div class="au-cmp"><figure><img src="assets/hero/' + CM.today + '.png" alt="Your paywall today"><figcaption>Today <span>· ' + (CM.todayCap || 'rebuilt from your recording') + '</span></figcaption></figure>' +
+    '<ol class="au-chg">' + (CM.rows || []).map(function(r){
+      return '<li><h4>' + r.h + (r.idea ? ' <i>Idea ' + r.idea + '</i>' : '') + '</h4><span class="au-was"><em>Today</em>' + r.was + '</span><span class="au-now"><em>Proposed</em>' + r.now + '</span></li>';
+    }).join('') + '</ol>' +
+    '<figure><button type="button" class="au-cmp-go" data-jumpto="' + CM.proposed + '" aria-label="Open the proposed paywall"><img src="assets/hero/' + CM.proposed + '.png" alt="The proposed paywall"></button><figcaption>Proposed <span>· tap to try it</span></figcaption></figure></div>' +
+    (CM.kept ? '<p class="au-kept">' + CM.kept + '</p>' : '');
+}
+if (C.liveUrl) { $('qrCard').hidden = false; $('qrMob').hidden = false; }
+if (/[?&]app\b/.test(Q)) {
+  var H0 = document.documentElement; H0.classList.add('appmode');
+  var openP = function(o){ H0.classList.toggle('au-open', o); $('abWhy').querySelector('em').textContent = o ? 'Close ↓' : 'Why ↑'; };
+  $('abWhy').onclick = function(){ openP(!H0.classList.contains('au-open')); };
+  $('abScrim').onclick = function(){ openP(false); };
+}
+if (C.video) {
+  var dlg = $('vid'), vel = $('vidEl'); vel.src = C.video; if (C.poster) vel.poster = C.poster; $('vidDl').href = C.video;
+  $('heroVideo').hidden = false;
+  $('heroVideo').onclick = function(){ dlg.showModal(); vel.play().catch(function(){}); };
+  $('vidX').onclick = function(){ dlg.close(); };
+  dlg.addEventListener('close', function(){ vel.pause(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+}
+
+/* ---- ?tour: a deterministic walkthrough from C.tour — tourAt(ms) paints one frame; record-video.sh records it ---- */
+function tourInit(){
+  var T = C.tour, H = document.documentElement, TR = T.transition || 360;
+  H.classList.add('tourmode', 'shot'); document.body.classList.add('nofx');
+  var SEG = T.segments, START = [], STATE = [], UNDER = [], acc = 0, st = JSON.parse(JSON.stringify(C.state));
+  SEG.forEach(function(s, i){
+    START.push(acc); acc += s.d;
+    Object.keys(s.st || {}).forEach(function(k){ st[k] = s.st[k]; }); STATE.push(JSON.parse(JSON.stringify(st)));
+    var u = null; if (scr[s.id].classList.contains('sheet')) for (var j = i - 1; j >= 0; j--) if (!scr[SEG[j].id].classList.contains('sheet')) { u = SEG[j].id; break; }
+    UNDER.push(u);
+  });
+  var TOTAL = acc, capEl = $('tCap'), tap = $('tTap'), pressed = null, popped = [];
+  $('tIntro').innerHTML = '<p class="au-eyebrow"><i></i>' + document.querySelector('.au-top-hero .au-eyebrow').textContent + '</p><h1 class="au-display">' + C.app + '</h1>' +
+    '<p class="au-lede">' + (T.introLede || document.querySelector('.au-top-hero .au-lede').innerHTML) + '</p>';
+  $('tEnd').innerHTML = '<p class="au-eyebrow"><i></i>Growth Audit · ' + C.app + '</p><h2 class="au-te-h">' + (T.endTitle || 'Five ideas, built into your own onboarding.') + '</h2>' +
+    '<div class="au-te-n">' + (O.cr ? '<div><small>up to</small><b>' + O.cr + '</b><span>CR to purchase</span></div>' : '') + (O.arpu ? '<div><small>up to</small><b>' + O.arpu + '</b><span>ARPU</span></div>' : '') + '</div>' +
+    (C.liveUrl ? '<div class="au-te-q"><img src="assets/qr-app.png" alt=""><div><b>Try it on your phone</b><span>' + C.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') + '</span></div></div>' : '') +
+    '<p class="au-te-f">' + C.grounding + '</p>';
+  function ease(x){ return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function easeBack(x){ var c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function capHTML(c){
+    c = c || {k: '', t: '', l: ''};
+    return '<div class="au-tk' + (c.n ? '' : ' au-ctx') + '"><i></i>' + (c.n ? 'Idea ' + c.n + ' of ' + IDEAS : (c.k || 'Context')) + '</div><h2 class="au-tt">' + c.t + '</h2><p class="au-tl">' + (c.l || '') + '</p>' +
+      (c.o ? '<div class="au-to"><small>Potential outcome · based on Adapty data</small><b><mark>' + c.o + '</mark></b><span>' + (c.ol || '') + '</span></div>' : '');
+  }
+  function place(id, tf, z){ scr[id].style.transform = tf; scr[id].style.zIndex = z; }
+  window.TOUR_MS = TOTAL;
+  window.tourAt = function(ms){
+    ms = Math.max(0, Math.min(TOTAL - 1, ms));
+    var i = 0; while (i < SEG.length - 1 && ms >= START[i + 1]) i++;
+    var s = SEG[i], local = ms - START[i], prev = i > 0 ? SEG[i - 1] : null;
+    Object.keys(STATE[i]).forEach(function(k){ S[k] = STATE[i][k]; }); sync();
+    var moving = prev && prev.id !== s.id && local < TR, p = moving ? ease(local / TR) : 1;
+    Object.keys(scr).forEach(function(k){ scr[k].classList.remove('is-active', 'is-past', 'under'); place(k, 'translateX(100%)', 0); });
+    var B = scr[s.id];
+    if (moving) {
+      if (B.classList.contains('sheet')) { place(prev.id, 'none', 1); B.style.transform = 'translateY(' + (1 - p) * 100 + '%)'; }
+      else {
+        var slide = 'translateX(' + (-28 * p) + '%)'; place(prev.id, slide, 1); B.style.transform = 'translateX(' + (1 - p) * 100 + '%)';
+        if (UNDER[i - 1]) place(UNDER[i - 1], slide, 0);
+      }
+    } else B.style.transform = 'none';
+    B.style.zIndex = 2;
+    if (UNDER[i] && !moving) place(UNDER[i], 'none', 1);
+    /* optional reveal: s.pop scales an element in, s.reveal fades one in a beat later */
+    popped.forEach(function(e){ e.style.transform = ''; e.style.opacity = ''; }); popped = [];
+    var q = Math.max(0, Math.min(1, (local - 250) / 550));
+    if (s.pop) { var pe = B.querySelector(s.pop); if (pe) { pe.style.transform = 'scale(' + (.55 + .45 * easeBack(q)) + ')'; pe.style.opacity = Math.min(1, q * 1.6); popped.push(pe); } }
+    if (s.reveal) { var re = B.querySelector(s.reveal); if (re) { re.style.opacity = Math.max(0, Math.min(1, (local - 520) / 300)); popped.push(re); } }
+    /* caption crossfades at screen changes; waits for the intro, gives way to the end card */
+    var key = s.id, op = 1;
+    if (moving) { if (p < .5) { key = prev.id; op = 1 - p * 2; } else op = p * 2 - 1; }
+    if (capEl.dataset.k !== key) { capEl.innerHTML = capHTML(T.captions[key]); capEl.dataset.k = key; }
+    var io = ms < 1100 ? 1 : Math.max(0, 1 - (ms - 1100) / 300), eo = s.end ? Math.min(1, local / 350) : 0;
+    capEl.style.opacity = op * Math.max(0, Math.min(1, (ms - 1400) / 300)) * (1 - eo);
+    /* the finger: fades in, taps, ripples out. Selectors are scoped to the screen */
+    tap.style.opacity = 0; if (pressed) { pressed.style.opacity = ''; pressed = null; }
+    if (s.tap) {
+      var el = B.querySelector(s.tap[0]), dt = local - s.tap[1];
+      if (el && dt > -260 && dt < 420) {
+        var r = el.getBoundingClientRect();
+        tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+        if (dt < 0) { tap.style.opacity = (dt + 260) / 260 * .9; tap.style.transform = 'scale(1)'; }
+        else { tap.style.opacity = .9 * (1 - dt / 420); tap.style.transform = 'scale(' + (1 + dt / 420 * .9) + ')'; }
+        if (dt >= 0 && dt < 160) { el.style.opacity = .72; pressed = el; }
+      }
+    }
+    $('tIntro').style.opacity = T.intro === false ? 0 : io;
+    $('tEnd').style.opacity = eo;
+    $('tProg').style.width = (ms / TOTAL * 100) + '%';
+    cur = s.id;
+    return i;
+  };
+  var tm = /[?&]t=(\d+)/.exec(Q); tourAt(tm ? +tm[1] : 0);
+}
+
+/* boot: #<screen-id> deep-links a screen (shoot.sh / hero-stills.sh use it); ?lang=xx picks the language */
+(function(){
+  var lm = /[?&]lang=(\w+)/.exec(Q); if (lm) setLang(lm[1]); else setLang(S.lang);
+  var h = location.hash.slice(1);
+  jump(scr[h] ? h : ORDER[0]);
+  if (scr[h] && !SHOT && !document.documentElement.classList.contains('appmode')) setTimeout(function(){ $('prototype').scrollIntoView(); }, 0);
+  if (/[?&]tour\b/.test(Q) && C.tour) tourInit();
+})();
+</script>
+</body>
+</html>
